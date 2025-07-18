@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ['mongoose', 'razorpay']
-  },
+  serverExternalPackages: ['mongoose', 'razorpay'],
   images: {
     domains: ['localhost', 'images.unsplash.com'],
     remotePatterns: [
