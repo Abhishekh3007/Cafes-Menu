@@ -2,9 +2,13 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useAuth } from '@/context/AuthContext'
+import { useCart } from './CartProvider'
 
 export default function Hero() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { isAuthenticated, logout } = useAuth()
+  const { toggleCart } = useCart()
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-brown-900 via-brown-800 to-brown-900 hero-pattern">
@@ -15,8 +19,10 @@ export default function Hero() {
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           {/* Logo */}
           <div className="flex items-center">
-            <h1 className="text-3xl font-display font-bold text-amber-300">
-              SONNAS
+            <h1 className="text-3xl font-display font-bold">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-200 via-rose-200 to-amber-200">
+                SONNAS
+              </span>
             </h1>
           </div>
 
@@ -34,11 +40,31 @@ export default function Hero() {
             <Link href="/contact" className="text-white hover:text-amber-300 transition-colors">
               Contact
             </Link>
-            <Link href="/menu">
-              <button className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg transition-colors">
-                Order Now
+            {isAuthenticated && (
+              <button onClick={toggleCart} className="text-white hover:text-amber-300 transition-colors">
+                Cart
               </button>
-            </Link>
+            )}
+            <div className="flex items-center space-x-4">
+              {isAuthenticated ? (
+                <button onClick={logout} className="text-white hover:text-amber-300 transition-colors">
+                  Logout
+                </button>
+              ) : (
+                <>
+                  <Link href="/login">
+                    <button className="text-white hover:text-amber-300 transition-colors">
+                      Login
+                    </button>
+                  </Link>
+                  <Link href="/register">
+                    <button className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg transition-colors">
+                      Sign Up
+                    </button>
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
 
           {/* Mobile menu button */}
@@ -60,11 +86,31 @@ export default function Hero() {
               <Link href="/menu" className="block text-white hover:text-amber-300">Menu</Link>
               <Link href="/about" className="block text-white hover:text-amber-300">About</Link>
               <Link href="/contact" className="block text-white hover:text-amber-300">Contact</Link>
-              <Link href="/menu">
-                <button className="w-full bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg">
-                  Order Now
+              {isAuthenticated && (
+                <button onClick={toggleCart} className="block text-white hover:text-amber-300">
+                  Cart
                 </button>
-              </Link>
+              )}
+              <div className="border-t border-brown-700 pt-4 space-y-2">
+                {isAuthenticated ? (
+                  <button onClick={logout} className="w-full text-left text-white hover:text-amber-300">
+                    Logout
+                  </button>
+                ) : (
+                  <>
+                    <Link href="/login">
+                      <button className="w-full text-left text-white hover:text-amber-300">
+                        Login
+                      </button>
+                    </Link>
+                    <Link href="/register">
+                      <button className="w-full bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg">
+                        Sign Up
+                      </button>
+                    </Link>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -79,7 +125,7 @@ export default function Hero() {
           </div>
 
           {/* Main Heading */}
-          <h1 className="text-6xl md:text-8xl font-display font-bold text-white mb-6 leading-tight">
+          <h1 className="text-5xl md:text-8xl font-display font-bold text-white mb-6 leading-tight">
             Welcome to
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-400">
@@ -88,7 +134,7 @@ export default function Hero() {
           </h1>
 
           {/* Elegant Description */}
-          <p className="text-xl md:text-2xl text-brown-100 mb-12 max-w-3xl mx-auto leading-relaxed font-light">
+          <p className="text-lg md:text-2xl text-brown-100 mb-10 max-w-3xl mx-auto leading-relaxed font-light">
             Where culinary artistry meets exceptional service. Experience the finest flavors 
             crafted with passion and served with elegance.
           </p>
@@ -101,9 +147,11 @@ export default function Hero() {
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               </button>
             </Link>
-            <button className="group border-2 border-white text-white hover:bg-white hover:text-brown-900 text-lg font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-2xl hover:shadow-white/25 hover:scale-105 min-w-[200px]">
-              Reserve Table
-            </button>
+            <Link href="/reserve">
+              <button className="group border-2 border-white text-white hover:bg-white hover:text-brown-900 text-lg font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-2xl hover:shadow-white/25 hover:scale-105 min-w-[200px]">
+                Reserve Table
+              </button>
+            </Link>
           </div>
 
           {/* Elegant Stats */}

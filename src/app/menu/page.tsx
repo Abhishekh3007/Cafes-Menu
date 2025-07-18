@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useCart } from '@/components/CartProvider'
+import { useAuth } from '@/context/AuthContext'
 import Cart from '@/components/Cart'
 
 // Menu data based on the SONNAS menu image provided
@@ -125,7 +126,7 @@ const menuItems = [
     name: 'Mexican Pizza',
     description: 'Loaded with vegetables on thin crust',
     price: 2.70,
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+    image: 'https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Pizza',
     rating: 4.4,
     ingredients: ['Thin crust', 'Mixed vegetables', 'Cheese'],
@@ -161,7 +162,7 @@ const menuItems = [
     name: 'Neapolitan Pizza',
     description: 'Onions, Bell peppers, Black Olives, Jalepeno, Chilli Garlic Oil',
     price: 2.90,
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+    image: 'https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Pizza',
     rating: 4.5,
     ingredients: ['Onions', 'Bell peppers', 'Black Olives', 'Jalepeno', 'Chilli Garlic Oil'],
@@ -324,7 +325,8 @@ export default function MenuPage() {
   const searchParams = useSearchParams()
   const categoryFromUrl = searchParams.get('category')
   const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl || 'All')
-  const { cart, addToCart, removeFromCart, updateQuantity, clearCart, toggleCart } = useCart()
+  const { items, isOpen, total, addToCart, removeFromCart, updateQuantity, clearCart, toggleCart } = useCart()
+  const { isAuthenticated } = useAuth()
 
   // Update selected category when URL changes
   useEffect(() => {
@@ -453,15 +455,21 @@ export default function MenuPage() {
                     {item.preparationTime} min
                   </div>
                   <button 
-                    onClick={() => addToCart({
-                      id: item.id,
-                      name: item.name,
-                      price: item.price,
-                      image: item.image
-                    })}
+                    onClick={() => {
+                      if (isAuthenticated) {
+                        addToCart({
+                          id: item.id,
+                          name: item.name,
+                          price: item.price,
+                          image: item.image
+                        })
+                      } else {
+                        window.location.href = '/login'
+                      }
+                    }}
                     className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
                   >
-                    Add to Cart
+                    {isAuthenticated ? 'Add to Cart' : 'Login to Order'}
                   </button>
                 </div>
               </div>
@@ -470,7 +478,7 @@ export default function MenuPage() {
         </div>
 
         {/* Floating Cart Button */}
-        {cart.items.length > 0 && (
+        {isAuthenticated && items.length > 0 && (
           <div className="fixed bottom-4 right-4 z-40">
             <button
               onClick={toggleCart}
@@ -481,7 +489,7 @@ export default function MenuPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m-2.4-2l2 10m0 0h12m-8 4a2 2 0 100 4 2 2 0 000-4zm8 0a2 2 0 100 4 2 2 0 000-4z" />
                 </svg>
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {cart.items.reduce((sum, item) => sum + item.quantity, 0)}
+                  {items.reduce((sum: number, item: any) => sum + item.quantity, 0)}
                 </span>
               </div>
             </button>
@@ -489,15 +497,7 @@ export default function MenuPage() {
         )}
 
         {/* Cart Sidebar */}
-        <Cart
-          isOpen={cart.isOpen}
-          items={cart.items}
-          total={cart.total}
-          onClose={toggleCart}
-          onUpdateQuantity={updateQuantity}
-          onRemoveItem={removeFromCart}
-          onClearCart={clearCart}
-        />
+        <Cart />
       </div>
     </div>
   )

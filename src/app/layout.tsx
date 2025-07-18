@@ -11,6 +11,10 @@ export const metadata: Metadata = {
   keywords: 'restaurant, fine dining, online ordering, food delivery, SONNAS',
 }
 
+import { AuthProvider } from '@/context/AuthContext'
+import { CartProvider } from '@/components/CartProvider'
+import Cart from '@/components/Cart'
+
 export default function RootLayout({
   children,
 }: {
@@ -19,7 +23,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${playfair.variable} font-body`}>
-        {children}
+        <AuthProvider>
+          <CartProvider>
+            {children}
+            <Cart />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   )

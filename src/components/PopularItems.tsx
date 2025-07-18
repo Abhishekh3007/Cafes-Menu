@@ -2,6 +2,8 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { useCart } from './CartProvider'
+import { useAuth } from '@/context/AuthContext'
 
 const popularItems = [
   {
@@ -67,6 +69,9 @@ const popularItems = [
 ]
 
 export default function PopularItems() {
+  const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
+
   return (
     <section className="py-20 px-4 lg:px-8 bg-brown-900">
       <div className="max-w-7xl mx-auto">
@@ -75,7 +80,7 @@ export default function PopularItems() {
             Popular Items
           </h2>
           <p className="text-xl text-brown-200 max-w-2xl mx-auto">
-            Our guests' favorite dishes that keep them coming back for more
+            Our guests&apos; favorite dishes that keep them coming back for more
           </p>
         </div>
 
@@ -122,8 +127,22 @@ export default function PopularItems() {
                   <span className="text-brown-400 text-sm">
                     {item.category}
                   </span>
-                  <button className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors font-medium">
-                    Add to Cart
+                  <button 
+                    onClick={() => {
+                      if (isAuthenticated) {
+                        addToCart({
+                          id: item.id,
+                          name: item.name,
+                          price: item.price,
+                          image: item.image
+                        })
+                      } else {
+                        window.location.href = '/login'
+                      }
+                    }}
+                    className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+                  >
+                    {isAuthenticated ? 'Add to Cart' : 'Login to Order'}
                   </button>
                 </div>
               </div>
