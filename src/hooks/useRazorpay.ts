@@ -38,6 +38,13 @@ export const useRazorpay = (): UseRazorpayResult => {
       setIsLoading(true)
       setError(null)
 
+      // Check if Razorpay is configured
+      if (!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 
+          process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID === 'rzp_test_your_razorpay_key_id' ||
+          process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID === 'rzp_test_placeholder_for_build') {
+        throw new Error('Razorpay not configured. Please check your environment variables.')
+      }
+
       // Load Razorpay script
       const scriptLoaded = await loadRazorpayScript()
       if (!scriptLoaded) {
