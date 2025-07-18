@@ -1,0 +1,21 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/api/auth/login/route": "/api/auth/login",
+  "/api/auth/register/route": "/api/auth/register",
+  "/api/menu/route": "/api/menu",
+  "/api/orders/route": "/api/orders",
+  "/api/payment/verify/route": "/api/payment/verify",
+  "/api/reservations/route": "/api/reservations",
+  "/api/payment/create-order/route": "/api/payment/create-order",
+  "/about/page": "/about",
+  "/contact/page": "/contact",
+  "/admin/page": "/admin",
+  "/login/page": "/login",
+  "/checkout/page": "/checkout",
+  "/register/page": "/register",
+  "/order-success/page": "/order-success",
+  "/page": "/",
+  "/menu/page": "/menu",
+  "/reserve/page": "/reserve",
+  "/test-payment/page": "/test-payment"
+}
