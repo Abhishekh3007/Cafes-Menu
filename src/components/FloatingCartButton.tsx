@@ -1,17 +1,19 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
 import { useCart } from './CartProvider'
 import { useAuth } from '@/context/AuthContext'
 
 export default function FloatingCartButton() {
-  const { toggleCart, items } = useCart()
+  const pathname = usePathname()
+  const { toggleCart, items, isOpen } = useCart()
   const { isAuthenticated } = useAuth()
   
   const itemCount = items.reduce((total, item) => total + item.quantity, 0)
   const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0)
 
-  // Don't show if not authenticated or no items
-  if (!isAuthenticated || items.length === 0) {
+  // Don't show if not authenticated, no items, on checkout page, or cart is already open
+  if (!isAuthenticated || items.length === 0 || pathname === '/checkout' || isOpen) {
     return null
   }
 

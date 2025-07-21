@@ -6,6 +6,7 @@ import { useCart } from '@/components/CartProvider'
 import { useAuth } from '@/context/AuthContext'
 import withAuth from '@/components/withAuth/withAuth'
 import { useRazorpay } from '@/hooks/useRazorpay'
+import LoyaltyPoints from '@/components/LoyaltyPoints'
 
 interface DeliveryAddress {
   fullName: string
@@ -25,6 +26,7 @@ function CheckoutPage() {
   const { items, total, clearCart } = useCart()
   const router = useRouter()
   const { initiatePayment, isLoading: paymentLoading } = useRazorpay()
+  const { user } = useAuth()
   
   const [orderType, setOrderType] = useState<'delivery' | 'takeaway'>('delivery')
   const [deliveryAddress, setDeliveryAddress] = useState<DeliveryAddress>({
@@ -45,9 +47,12 @@ function CheckoutPage() {
   const [upiId, setUpiId] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [loyaltyDiscount, setLoyaltyDiscount] = useState(0)
+  const [loyaltyPointsUsed, setLoyaltyPointsUsed] = useState(0)
 
   const deliveryFee = orderType === 'delivery' ? 50 : 0
-  const finalTotal = total + deliveryFee
+  const subtotal = total + deliveryFee
+  const finalTotal = subtotal - loyaltyDiscount
 
   const handleAddressChange = (field: keyof DeliveryAddress, value: string) => {
     setDeliveryAddress(prev => ({ ...prev, [field]: value }))
@@ -55,6 +60,11 @@ function CheckoutPage() {
 
   const handleCustomerInfoChange = (field: keyof CustomerInfo, value: string) => {
     setCustomerInfo(prev => ({ ...prev, [field]: value }))
+  }
+
+  const handleLoyaltyRedemption = (discount: number, pointsUsed: number) => {
+    setLoyaltyDiscount(discount)
+    setLoyaltyPointsUsed(pointsUsed)
   }
 
   const validateForm = () => {
@@ -227,12 +237,25 @@ function CheckoutPage() {
                   <span>₹0.00</span>
                 </div>
               )}
+              {loyaltyDiscount > 0 && (
+                <div className="flex justify-between text-green-400">
+                  <span>Loyalty Discount ({loyaltyPointsUsed} points):</span>
+                  <span>-₹{loyaltyDiscount.toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between text-xl font-bold text-amber-300 pt-2 border-t border-brown-600">
                 <span>Total:</span>
                 <span>₹{finalTotal.toFixed(2)}</span>
               </div>
             </div>
           </div>
+
+          {/* Loyalty Points Section */}
+          <LoyaltyPoints 
+            userMobile={user?.mobile}
+            billAmount={subtotal}
+            onPointsRedeemed={handleLoyaltyRedemption}
+          />
 
           {/* Order Type & Details Form */}
           <div className="space-y-6">

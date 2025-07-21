@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react'
+import { usePathname } from 'next/navigation'
 
 interface CartItem {
   id: number
@@ -24,9 +25,17 @@ interface CartState {
 const CartContext = createContext<CartState | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const pathname = usePathname()
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [total, setTotal] = useState(0);
+
+  // Close cart when navigating to checkout page
+  useEffect(() => {
+    if (pathname === '/checkout') {
+      setIsOpen(false);
+    }
+  }, [pathname])
 
   // Load cart from localStorage on mount
   useEffect(() => {

@@ -2,9 +2,11 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useCart } from './CartProvider'
 
 export default function Cart() {
+  const pathname = usePathname()
   const { 
     isOpen, 
     items, 
@@ -15,7 +17,8 @@ export default function Cart() {
     clearCart 
   } = useCart();
 
-  if (!isOpen) return null
+  // Don't show cart on checkout page
+  if (!isOpen || pathname === '/checkout') return null
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
@@ -103,7 +106,7 @@ export default function Cart() {
               </div>
               
               <div className="space-y-2">
-                <Link href="/checkout">
+                <Link href="/checkout" onClick={toggleCart}>
                   <button className="w-full bg-amber-600 hover:bg-amber-700 text-white py-2.5 rounded-lg font-semibold transition-colors">
                     Proceed to Checkout
                   </button>

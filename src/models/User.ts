@@ -13,6 +13,8 @@ export interface IUser extends Document {
     state: string
     zipCode: string
   }
+  loyaltyPoints: number
+  totalOrders: number
   createdAt: Date
   updatedAt: Date
 }
@@ -53,6 +55,16 @@ const UserSchema = new Schema<IUser>({
     city: String,
     state: String,
     zipCode: String,
+  },
+  loyaltyPoints: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
+  totalOrders: {
+    type: Number,
+    default: 0,
+    min: 0,
   },
 }, {
   timestamps: true,
