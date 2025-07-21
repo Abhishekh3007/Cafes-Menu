@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/components/CartProvider'
 import { useAuth } from '@/context/AuthContext'
@@ -23,10 +23,15 @@ interface CustomerInfo {
 }
 
 function CheckoutPage() {
-  const { items, total, clearCart } = useCart()
+  const { items, total, clearCart, closeCart } = useCart()
   const router = useRouter()
   const { initiatePayment, isLoading: paymentLoading } = useRazorpay()
   const { user } = useAuth()
+
+  // Close cart when checkout page loads
+  useEffect(() => {
+    closeCart()
+  }, [closeCart])
   
   const [orderType, setOrderType] = useState<'delivery' | 'takeaway'>('delivery')
   const [deliveryAddress, setDeliveryAddress] = useState<DeliveryAddress>({

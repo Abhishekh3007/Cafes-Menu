@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -12,10 +13,18 @@ export default function Cart() {
     items, 
     total, 
     toggleCart, 
+    closeCart,
     updateQuantity, 
     removeFromCart, 
     clearCart 
   } = useCart();
+
+  // Close cart when on checkout page
+  useEffect(() => {
+    if (pathname === '/checkout' && isOpen) {
+      closeCart();
+    }
+  }, [pathname, isOpen, closeCart]);
 
   // Don't show cart on checkout page
   if (!isOpen || pathname === '/checkout') return null

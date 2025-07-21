@@ -52,6 +52,8 @@ export async function POST(request: NextRequest) {
       role: user.role,
       phone: user.phone,
       address: user.address,
+      loyaltyPoints: user.loyaltyPoints || 0,
+      totalOrders: user.totalOrders || 0,
     }
 
     const response = NextResponse.json({
