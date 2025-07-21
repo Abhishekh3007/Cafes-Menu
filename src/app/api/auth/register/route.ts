@@ -8,21 +8,21 @@ export async function POST(request: NextRequest) {
   try {
     await dbConnect()
     
-    const { name, email, password, phone, address } = await request.json()
+    const { name, mobile, password, phone, address } = await request.json()
 
-    if (!name || !email || !password) {
+    if (!name || !mobile || !password) {
       return NextResponse.json(
-        { error: 'Name, email, and password are required' },
+        { error: 'Name, mobile number, and password are required' },
         { status: 400 }
       )
     }
 
     // Check if user already exists
-    const existingUser = await User.findOne({ email })
+    const existingUser = await User.findOne({ mobile })
     
     if (existingUser) {
       return NextResponse.json(
-        { error: 'User already exists with this email' },
+        { error: 'User already exists with this mobile number' },
         { status: 400 }
       )
     }
@@ -34,9 +34,9 @@ export async function POST(request: NextRequest) {
     // Create new user
     const user = new User({
       name,
-      email,
+      mobile,
       password: hashedPassword,
-      phone,
+      phone: mobile, // Use mobile as phone as well
       address,
       role: 'customer',
     })
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
 
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user._id, email: user.email, role: user.role },
+      { userId: user._id, mobile: user.mobile, role: user.role },
       process.env.JWT_SECRET || 'fallback-secret',
       { expiresIn: '7d' }
     )
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     const userResponse = {
       id: user._id,
       name: user.name,
-      email: user.email,
+      mobile: user.mobile,
       role: user.role,
       phone: user.phone,
       address: user.address,

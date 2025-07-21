@@ -2,7 +2,8 @@ import mongoose, { Document, Schema } from 'mongoose'
 
 export interface IUser extends Document {
   name: string
-  email: string
+  email?: string
+  mobile: string
   password: string
   role: 'customer' | 'admin'
   phone?: string
@@ -24,9 +25,13 @@ const UserSchema = new Schema<IUser>({
   },
   email: {
     type: String,
-    required: [true, 'Please provide an email'],
-    unique: true,
     lowercase: true,
+    trim: true,
+  },
+  mobile: {
+    type: String,
+    required: [true, 'Please provide a mobile number'],
+    unique: true,
     trim: true,
   },
   password: {

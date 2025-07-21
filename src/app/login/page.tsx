@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
+  const [mobile, setMobile] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -22,7 +22,7 @@ export default function LoginPage() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ mobile, password }),
       })
 
       const data = await res.json()
@@ -52,16 +52,16 @@ export default function LoginPage() {
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-white text-sm font-medium mb-2" htmlFor="email">
-                Email
+              <label className="block text-white text-sm font-medium mb-2" htmlFor="mobile">
+                Mobile Number
               </label>
               <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="mobile"
+                type="tel"
+                value={mobile}
+                onChange={(e) => setMobile(e.target.value)}
                 className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400 transition-colors"
-                placeholder="you@example.com"
+                placeholder="+91 9999999999"
                 required
               />
             </div>

@@ -8,7 +8,9 @@ import { useCart } from './CartProvider'
 export default function Hero() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { isAuthenticated, logout } = useAuth()
-  const { toggleCart } = useCart()
+  const { toggleCart, items } = useCart()
+
+  const itemCount = items.reduce((total, item) => total + item.quantity, 0)
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-brown-900 via-brown-800 to-brown-900 hero-pattern">
@@ -37,14 +39,26 @@ export default function Hero() {
             <Link href="/about" className="text-white hover:text-amber-300 transition-colors">
               About
             </Link>
-            <Link href="/contact" className="text-white hover:text-amber-300 transition-colors">
-              Contact
+            <Link href="/contact" className="text-white hover:text-amber-300 transition-colors font-medium">
+              📞 Contact Us
             </Link>
-            {isAuthenticated && (
-              <button onClick={toggleCart} className="text-white hover:text-amber-300 transition-colors">
-                Cart
-              </button>
-            )}
+            
+            {/* Cart Button - Always visible and prominent */}
+            <button 
+              onClick={toggleCart} 
+              className="relative bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-amber-500/25"
+            >
+              <div className="flex items-center space-x-2">
+                <span>🛒</span>
+                <span>Cart</span>
+                {itemCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                    {itemCount}
+                  </span>
+                )}
+              </div>
+            </button>
+
             <div className="flex items-center space-x-4">
               {isAuthenticated ? (
                 <button onClick={logout} className="text-white hover:text-amber-300 transition-colors">
@@ -58,7 +72,7 @@ export default function Hero() {
                     </button>
                   </Link>
                   <Link href="/register">
-                    <button className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg transition-colors">
+                    <button className="bg-brown-700 hover:bg-brown-600 text-white px-6 py-2 rounded-lg transition-colors">
                       Sign Up
                     </button>
                   </Link>
@@ -80,17 +94,29 @@ export default function Hero() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-brown-800 border-t border-brown-700">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-brown-800 border-t border-brown-700 shadow-xl">
             <div className="px-4 py-4 space-y-4">
               <Link href="/" className="block text-white hover:text-amber-300">Home</Link>
               <Link href="/menu" className="block text-white hover:text-amber-300">Menu</Link>
               <Link href="/about" className="block text-white hover:text-amber-300">About</Link>
-              <Link href="/contact" className="block text-white hover:text-amber-300">Contact</Link>
-              {isAuthenticated && (
-                <button onClick={toggleCart} className="block text-white hover:text-amber-300">
-                  Cart
-                </button>
-              )}
+              <Link href="/contact" className="block text-white hover:text-amber-300 font-medium">📞 Contact Us</Link>
+              
+              {/* Mobile Cart Button - Prominent */}
+              <button 
+                onClick={toggleCart} 
+                className="w-full bg-amber-600 hover:bg-amber-700 text-white px-4 py-3 rounded-lg transition-all duration-300 font-medium"
+              >
+                <div className="flex items-center justify-center space-x-2">
+                  <span>🛒</span>
+                  <span>Cart</span>
+                  {itemCount > 0 && (
+                    <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 font-bold">
+                      {itemCount} items
+                    </span>
+                  )}
+                </div>
+              </button>
+              
               <div className="border-t border-brown-700 pt-4 space-y-2">
                 {isAuthenticated ? (
                   <button onClick={logout} className="w-full text-left text-white hover:text-amber-300">
@@ -145,6 +171,11 @@ export default function Hero() {
               <button className="group relative overflow-hidden bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white text-lg font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-2xl hover:shadow-amber-500/25 hover:scale-105 min-w-[200px]">
                 <span className="relative z-10">Explore Menu</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+              </button>
+            </Link>
+            <Link href="/contact">
+              <button className="group bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white text-lg font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-2xl hover:shadow-green-500/25 hover:scale-105 min-w-[200px]">
+                📞 Contact Us
               </button>
             </Link>
             <Link href="/reserve">

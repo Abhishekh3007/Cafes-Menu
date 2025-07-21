@@ -11,10 +11,10 @@ const stats = [
 ]
 
 const recentOrders = [
-  { id: 'ORD-001', customer: 'John Doe', items: 3, total: 45.99, status: 'preparing', time: '10 min ago' },
-  { id: 'ORD-002', customer: 'Jane Smith', items: 2, total: 28.50, status: 'ready', time: '15 min ago' },
-  { id: 'ORD-003', customer: 'Mike Johnson', items: 5, total: 67.25, status: 'delivered', time: '25 min ago' },
-  { id: 'ORD-004', customer: 'Sarah Wilson', items: 1, total: 16.99, status: 'confirmed', time: '30 min ago' },
+  { id: 'ORD-001', customer: 'John Doe', items: 3, total: 45.99, status: 'preparing', type: 'delivery', time: '10 min ago' },
+  { id: 'ORD-002', customer: 'Jane Smith', items: 2, total: 28.50, status: 'ready', type: 'takeaway', time: '15 min ago' },
+  { id: 'ORD-003', customer: 'Mike Johnson', items: 5, total: 67.25, status: 'delivered', type: 'delivery', time: '25 min ago' },
+  { id: 'ORD-004', customer: 'Sarah Wilson', items: 1, total: 16.99, status: 'confirmed', type: 'takeaway', time: '30 min ago' },
 ]
 
 const topItems = [
@@ -35,6 +35,14 @@ export default function AdminDashboard() {
       case 'delivered': return 'bg-gray-700 text-gray-200'
       default: return 'bg-brown-700 text-brown-200'
     }
+  }
+
+  const getOrderTypeIcon = (type: string) => {
+    return type === 'delivery' ? '🚚' : '🏪'
+  }
+
+  const getOrderTypeColor = (type: string) => {
+    return type === 'delivery' ? 'text-blue-400' : 'text-green-400'
   }
 
   return (
@@ -113,9 +121,16 @@ export default function AdminDashboard() {
                   <div className="space-y-4">
                     {recentOrders.map((order) => (
                       <div key={order.id} className="flex items-center justify-between">
-                        <div>
-                          <p className="text-white font-medium">{order.id}</p>
-                          <p className="text-brown-300 text-sm">{order.customer} • {order.items} items</p>
+                        <div className="flex items-center space-x-3">
+                          <span className={`text-lg ${getOrderTypeColor(order.type)}`}>
+                            {getOrderTypeIcon(order.type)}
+                          </span>
+                          <div>
+                            <p className="text-white font-medium">{order.id}</p>
+                            <p className="text-brown-300 text-sm">
+                              {order.customer} • {order.items} items • {order.type}
+                            </p>
+                          </div>
                         </div>
                         <div className="text-right">
                           <p className="text-white font-semibold">${order.total}</p>

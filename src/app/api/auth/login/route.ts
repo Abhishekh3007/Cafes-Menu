@@ -8,17 +8,17 @@ export async function POST(request: NextRequest) {
   try {
     await dbConnect()
     
-    const { email, password } = await request.json()
+    const { mobile, password } = await request.json()
 
-    if (!email || !password) {
+    if (!mobile || !password) {
       return NextResponse.json(
-        { error: 'Email and password are required' },
+        { error: 'Mobile number and password are required' },
         { status: 400 }
       )
     }
 
-    // Find user by email
-    const user = await User.findOne({ email }).select('+password')
+    // Find user by mobile number
+    const user = await User.findOne({ mobile }).select('+password')
     
     if (!user) {
       return NextResponse.json(
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
 
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user._id, email: user.email, role: user.role },
+      { userId: user._id, mobile: user.mobile, role: user.role },
       process.env.JWT_SECRET || 'fallback-secret',
       { expiresIn: '7d' }
     )
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     const userResponse = {
       id: user._id,
       name: user.name,
-      email: user.email,
+      mobile: user.mobile,
       role: user.role,
       phone: user.phone,
       address: user.address,

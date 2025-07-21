@@ -7,6 +7,7 @@ function OrderSuccessContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const orderId = searchParams.get('orderId')
+  const orderType = searchParams.get('orderType') || 'delivery'
   const [timeLeft, setTimeLeft] = useState(10)
 
   useEffect(() => {
@@ -47,7 +48,18 @@ function OrderSuccessContent() {
           <div className="space-y-4 text-brown-200 mb-8">
             <p>🎉 Thank you for your order!</p>
             <p>📱 You will receive a confirmation call shortly</p>
-            <p>🚚 Expected delivery time: 30-45 minutes</p>
+            {orderType === 'delivery' ? (
+              <>
+                <p>🚚 Expected delivery time: 30-45 minutes</p>
+                <p>🏠 Your order will be delivered to your address</p>
+              </>
+            ) : (
+              <>
+                <p>🏪 Expected pickup time: 20-30 minutes</p>
+                <p>📍 Please collect from: SONNAS Restaurant, Main Street</p>
+                <p>🎫 Bring your order confirmation with you</p>
+              </>
+            )}
             <p>💝 Your delicious meal is being prepared with love</p>
           </div>
 

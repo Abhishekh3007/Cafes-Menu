@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 import { AuthProvider } from '@/context/AuthContext'
 import { CartProvider } from '@/components/CartProvider'
 import Cart from '@/components/Cart'
+import FloatingCartButton from '@/components/FloatingCartButton'
 
 export default function RootLayout({
   children,
@@ -27,6 +28,7 @@ export default function RootLayout({
           <CartProvider>
             {children}
             <Cart />
+            <FloatingCartButton />
           </CartProvider>
         </AuthProvider>
       </body>
