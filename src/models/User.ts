@@ -4,7 +4,7 @@ export interface IUser extends Document {
   name: string
   email?: string
   mobile: string
-  password: string
+  password?: string
   role: 'customer' | 'admin'
   phone?: string
   address?: {
@@ -15,6 +15,8 @@ export interface IUser extends Document {
   }
   loyaltyPoints: number
   totalOrders: number
+  isVerified: boolean
+  verificationMethod: 'otp' | 'password'
   createdAt: Date
   updatedAt: Date
 }
@@ -38,7 +40,6 @@ const UserSchema = new Schema<IUser>({
   },
   password: {
     type: String,
-    required: [true, 'Please provide a password'],
     minlength: 6,
   },
   role: {
@@ -65,6 +66,15 @@ const UserSchema = new Schema<IUser>({
     type: Number,
     default: 0,
     min: 0,
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  verificationMethod: {
+    type: String,
+    enum: ['otp', 'password'],
+    default: 'otp',
   },
 }, {
   timestamps: true,

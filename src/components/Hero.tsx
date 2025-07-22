@@ -7,7 +7,7 @@ import { useCart } from './CartProvider'
 
 export default function Hero() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { isAuthenticated, logout } = useAuth()
+  const { isAuthenticated, user, logout } = useAuth()
   const { toggleCart, items } = useCart()
 
   const itemCount = items.reduce((total, item) => total + item.quantity, 0)
@@ -61,13 +61,18 @@ export default function Hero() {
 
             <div className="flex items-center space-x-4">
               {isAuthenticated ? (
-                <button onClick={logout} className="text-white hover:text-amber-300 transition-colors">
-                  Logout
-                </button>
+                <div className="flex items-center space-x-4">
+                  <span className="text-amber-300 font-medium">
+                    Hi, {user?.name || 'Guest'}!
+                  </span>
+                  <button onClick={logout} className="text-white hover:text-amber-300 transition-colors">
+                    Logout
+                  </button>
+                </div>
               ) : (
                 <>
                   <Link href="/login">
-                    <button className="text-white hover:text-amber-300 transition-colors">
+                    <button className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg transition-colors font-medium">
                       Login
                     </button>
                   </Link>
@@ -119,18 +124,23 @@ export default function Hero() {
               
               <div className="border-t border-brown-700 pt-4 space-y-2">
                 {isAuthenticated ? (
-                  <button onClick={logout} className="w-full text-left text-white hover:text-amber-300">
-                    Logout
-                  </button>
+                  <div className="space-y-2">
+                    <div className="text-amber-300 font-medium">
+                      Hi, {user?.name || 'Guest'}!
+                    </div>
+                    <button onClick={logout} className="w-full text-left text-white hover:text-amber-300">
+                      Logout
+                    </button>
+                  </div>
                 ) : (
                   <>
                     <Link href="/login">
-                      <button className="w-full text-left text-white hover:text-amber-300">
-                        Login
+                      <button className="w-full bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg font-medium mb-2">
+                        Login with OTP
                       </button>
                     </Link>
                     <Link href="/register">
-                      <button className="w-full bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg">
+                      <button className="w-full bg-brown-600 hover:bg-brown-700 text-white px-6 py-2 rounded-lg">
                         Sign Up
                       </button>
                     </Link>

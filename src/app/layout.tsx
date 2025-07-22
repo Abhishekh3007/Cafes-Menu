@@ -15,6 +15,7 @@ import { AuthProvider } from '@/context/AuthContext'
 import { CartProvider } from '@/components/CartProvider'
 import Cart from '@/components/Cart'
 import FloatingCartButton from '@/components/FloatingCartButton'
+import { Toaster } from 'react-hot-toast'
 
 export default function RootLayout({
   children,
@@ -29,6 +30,29 @@ export default function RootLayout({
             {children}
             <Cart />
             <FloatingCartButton />
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: '#78350f',
+                  color: '#fbbf24',
+                  border: '1px solid #92400e',
+                },
+                success: {
+                  iconTheme: {
+                    primary: '#10b981',
+                    secondary: '#ffffff',
+                  },
+                },
+                error: {
+                  iconTheme: {
+                    primary: '#ef4444',
+                    secondary: '#ffffff',
+                  },
+                },
+              }}
+            />
           </CartProvider>
         </AuthProvider>
       </body>

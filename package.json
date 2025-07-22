@@ -22,7 +22,8 @@
     "react-dom": "^18",
     "react-hook-form": "^7.47.0",
     "react-hot-toast": "^2.4.1",
-    "stripe": "^14.0.0"
+    "stripe": "^14.0.0",
+    "twilio": "^5.7.3"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
