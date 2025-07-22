@@ -183,11 +183,6 @@ export default function Hero() {
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               </button>
             </Link>
-            <Link href="/contact">
-              <button className="group bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white text-lg font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-2xl hover:shadow-green-500/25 hover:scale-105 min-w-[200px]">
-                📞 Contact Us
-              </button>
-            </Link>
             <Link href="/reserve">
               <button className="group border-2 border-white text-white hover:bg-white hover:text-brown-900 text-lg font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-2xl hover:shadow-white/25 hover:scale-105 min-w-[200px]">
                 Reserve Table

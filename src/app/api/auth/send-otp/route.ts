@@ -54,6 +54,16 @@ export async function POST(request: NextRequest) {
       isNewUser = true
     }
 
+    // Check if user is already manually verified
+    if (user.isVerified && user.verificationMethod === 'manual') {
+      return NextResponse.json({
+        success: true,
+        message: 'This number is pre-verified. You can login directly.',
+        isPreVerified: true,
+        userId: user._id
+      })
+    }
+
     // Send OTP using Twilio (use the original mobile number format)
     console.log('Sending OTP to:', mobile)
     const otpResult = await sendOTP(mobile)

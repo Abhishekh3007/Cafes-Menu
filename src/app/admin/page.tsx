@@ -123,9 +123,14 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
-            <Link href="/" className="text-sm text-amber-300 hover:text-amber-400">
-              View Live Site
-            </Link>
+            <div className="flex items-center space-x-4">
+              <Link href="/admin/phone-verification" className="text-sm text-blue-300 hover:text-blue-400">
+                📱 Phone Verification
+              </Link>
+              <Link href="/" className="text-sm text-amber-300 hover:text-amber-400">
+                View Live Site
+              </Link>
+            </div>
           </div>
         </div>
       </div>

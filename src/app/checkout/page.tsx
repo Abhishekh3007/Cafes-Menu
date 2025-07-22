@@ -28,6 +28,33 @@ function CheckoutPage() {
   const { initiatePayment, isLoading: paymentLoading } = useRazorpay()
   const { user } = useAuth()
 
+  // Buy Now functionality - check for direct purchase
+  const [isBuyNow, setIsBuyNow] = useState(false)
+  const [buyNowItem, setBuyNowItem] = useState<any>(null)
+  const [buyNowTotal, setBuyNowTotal] = useState(0)
+
+  // Check if this is a Buy Now transaction
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const isBuyNowMode = urlParams.get('buyNow') === 'true'
+    
+    if (isBuyNowMode) {
+      const storedItem = sessionStorage.getItem('buyNowItem')
+      if (storedItem) {
+        const item = JSON.parse(storedItem)
+        setIsBuyNow(true)
+        setBuyNowItem(item)
+        setBuyNowTotal(item.price)
+        // Clear the stored item
+        sessionStorage.removeItem('buyNowItem')
+      }
+    }
+  }, [])
+
+  // Use Buy Now item or cart items
+  const currentItems = isBuyNow ? [buyNowItem] : items
+  const currentTotal = isBuyNow ? buyNowTotal : total
+
   // Close cart when checkout page loads
   useEffect(() => {
     closeCart()
@@ -56,7 +83,7 @@ function CheckoutPage() {
   const [loyaltyPointsUsed, setLoyaltyPointsUsed] = useState(0)
 
   const deliveryFee = orderType === 'delivery' ? 50 : 0
-  const subtotal = total + deliveryFee
+  const subtotal = currentTotal + deliveryFee
   const finalTotal = subtotal - loyaltyDiscount
 
   const handleAddressChange = (field: keyof DeliveryAddress, value: string) => {
@@ -121,14 +148,14 @@ function CheckoutPage() {
 
         // If payment successful, create order with payment details
         const orderData = {
-          items: items,
+          items: currentItems,
           orderType: orderType,
           deliveryAddress: orderType === 'delivery' ? deliveryAddress : null,
           customerInfo: orderType === 'takeaway' ? customerInfo : null,
           paymentMethod: 'online',
           paymentId: paymentResult.paymentId,
           razorpayOrderId: paymentResult.orderId,
-          total: total,
+          total: currentTotal,
           deliveryFee: deliveryFee,
           finalTotal: finalTotal,
           orderDate: new Date().toISOString()
@@ -146,18 +173,24 @@ function CheckoutPage() {
         }
 
         const result = await response.json()
-        clearCart()
+        // Only clear cart if not in Buy Now mode
+        if (!isBuyNow) {
+          clearCart()
+        } else {
+          // Clear Buy Now session storage
+          sessionStorage.removeItem('buyNowItem')
+        }
         router.push(`/order-success?orderId=${result.orderId}&orderType=${orderType}`)
       } else {
         // Handle COD and UPI orders (existing logic)
         const orderData = {
-          items: items,
+          items: currentItems,
           orderType: orderType,
           deliveryAddress: orderType === 'delivery' ? deliveryAddress : null,
           customerInfo: orderType === 'takeaway' ? customerInfo : null,
           paymentMethod: paymentMethod,
           upiId: paymentMethod === 'upi' ? upiId : null,
-          total: total,
+          total: currentTotal,
           deliveryFee: deliveryFee,
           finalTotal: finalTotal,
           orderDate: new Date().toISOString()
@@ -175,7 +208,13 @@ function CheckoutPage() {
         }
 
         const result = await response.json()
-        clearCart()
+        // Only clear cart if not in Buy Now mode
+        if (!isBuyNow) {
+          clearCart()
+        } else {
+          // Clear Buy Now session storage
+          sessionStorage.removeItem('buyNowItem')
+        }
         router.push(`/order-success?orderId=${result.orderId}&orderType=${orderType}`)
       }
 
@@ -186,7 +225,7 @@ function CheckoutPage() {
     }
   }
 
-  if (items.length === 0) {
+  if (currentItems.length === 0 && !isBuyNow) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-brown-900 via-brown-800 to-brown-900 flex items-center justify-center p-4">
         <div className="text-center">
@@ -206,21 +245,40 @@ function CheckoutPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-brown-900 via-brown-800 to-brown-900 py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-display font-bold text-white text-center mb-8">Checkout</h1>
+        {/* Buy Now Indicator */}
+        {isBuyNow && (
+          <div className="mb-6 bg-gradient-to-r from-amber-600 to-amber-700 p-4 rounded-lg shadow-lg">
+            <div className="flex items-center justify-center space-x-2">
+              <span className="text-white text-lg font-semibold">⚡ Express Checkout</span>
+              <span className="text-amber-100 text-sm">- Amazon-style one-click buy</span>
+            </div>
+          </div>
+        )}
+        
+        <h1 className="text-4xl font-display font-bold text-white text-center mb-8">
+          {isBuyNow ? 'Express Checkout' : 'Checkout'}
+        </h1>
         
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Order Summary */}
           <div className="bg-brown-800 bg-opacity-30 backdrop-blur-sm rounded-2xl p-6 border border-amber-300 border-opacity-20">
-            <h2 className="text-2xl font-display font-bold text-white mb-6">Order Summary</h2>
+            <h2 className="text-2xl font-display font-bold text-white mb-6">
+              {isBuyNow ? '⚡ Express Order' : 'Order Summary'}
+            </h2>
             
             <div className="space-y-4 mb-6">
-              {items.map((item) => (
-                <div key={item.id} className="flex justify-between items-center py-2 border-b border-brown-700">
+              {currentItems.map((item) => (
+                <div key={item.id} className={`flex justify-between items-center py-3 border-b border-brown-700 ${isBuyNow ? 'bg-amber-900 bg-opacity-20 rounded-lg px-3' : ''}`}>
                   <div>
-                    <h3 className="text-white font-medium">{item.name}</h3>
-                    <p className="text-brown-300 text-sm">Qty: {item.quantity}</p>
+                    <h3 className="text-white font-medium">
+                      {isBuyNow && '⚡ '}{item.name}
+                    </h3>
+                    <p className="text-brown-300 text-sm">Qty: {item.quantity || 1}</p>
+                    {isBuyNow && (
+                      <p className="text-amber-300 text-xs font-medium">Express Checkout Item</p>
+                    )}
                   </div>
-                  <span className="text-amber-300 font-semibold">₹{(item.price * item.quantity).toFixed(2)}</span>
+                  <span className="text-amber-300 font-semibold">₹{(item.price * (item.quantity || 1)).toFixed(2)}</span>
                 </div>
               ))}
             </div>
@@ -228,7 +286,7 @@ function CheckoutPage() {
             <div className="space-y-2 pt-4 border-t border-brown-700">
               <div className="flex justify-between text-brown-200">
                 <span>Subtotal:</span>
-                <span>₹{total.toFixed(2)}</span>
+                <span>₹{currentTotal.toFixed(2)}</span>
               </div>
               {orderType === 'delivery' && (
                 <div className="flex justify-between text-brown-200">
@@ -516,11 +574,15 @@ function CheckoutPage() {
             <button
               onClick={handleSubmitOrder}
               disabled={isLoading || paymentLoading}
-              className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-semibold py-4 rounded-lg transition-all duration-300 shadow-xl hover:shadow-amber-500/25 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+              className={`w-full font-semibold py-4 rounded-lg transition-all duration-300 shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed ${
+                isBuyNow 
+                  ? 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 hover:shadow-green-500/25' 
+                  : 'bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 hover:shadow-amber-500/25'
+              } text-white`}
             >
               {(isLoading || paymentLoading) ? 
                 (paymentMethod === 'online' ? 'Processing Payment...' : 'Placing Order...') : 
-                `Place Order - ₹${finalTotal.toFixed(2)}`
+                isBuyNow ? `⚡ Express Buy - ₹${finalTotal.toFixed(2)}` : `Place Order - ₹${finalTotal.toFixed(2)}`
               }
             </button>
           </div>

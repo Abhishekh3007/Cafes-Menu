@@ -79,6 +79,24 @@ export default function LoginPage() {
         throw new Error(data.message || 'Failed to send OTP')
       }
 
+      // Check if user is pre-verified (manually verified)
+      if (data.isPreVerified) {
+        // Try direct login for pre-verified users
+        const loginRes = await fetch('/api/auth/direct-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mobile: formattedMobile }),
+        })
+
+        const loginData = await loginRes.json()
+
+        if (loginRes.ok && loginData.success) {
+          login(loginData.user)
+          router.push('/')
+          return
+        }
+      }
+
       setIsNewUser(data.isNewUser)
       setStep(2)
       setResendCountdown(30)

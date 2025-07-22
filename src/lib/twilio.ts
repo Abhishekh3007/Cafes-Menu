@@ -101,6 +101,29 @@ export const sendOTP = async (phoneNumber: string): Promise<OTPResponse> => {
       status: error.status,
       moreInfo: error.moreInfo
     });
+    
+    // Check for specific Twilio trial account errors
+    if (error.code === 21608) {
+      return {
+        success: false,
+        message: 'This phone number is not verified. In Twilio trial mode, you can only send SMS to verified numbers. Please upgrade your Twilio account or verify this number in Twilio Console.'
+      };
+    }
+    
+    if (error.code === 21211) {
+      return {
+        success: false,
+        message: 'Invalid phone number format. Please check the number and try again.'
+      };
+    }
+    
+    if (error.code === 60200) {
+      return {
+        success: false,
+        message: 'International SMS is not enabled for trial accounts. Please upgrade your Twilio account.'
+      };
+    }
+    
     return {
       success: false,
       message: error.message || 'Failed to send OTP'

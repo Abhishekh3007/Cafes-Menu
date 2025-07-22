@@ -326,7 +326,7 @@ function MenuContent() {
   const categoryFromUrl = searchParams.get('category')
   const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl || 'All')
   const { items, isOpen, total, addToCart, removeFromCart, updateQuantity, clearCart, toggleCart } = useCart()
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, user } = useAuth()
 
   // Update selected category when URL changes
   useEffect(() => {
@@ -334,6 +334,12 @@ function MenuContent() {
       setSelectedCategory(categoryFromUrl)
     }
   }, [categoryFromUrl])
+
+  // Helper function to check if user is truly authenticated
+  const isUserAuthenticated = () => {
+    const userData = localStorage.getItem('userData')
+    return isAuthenticated && user && userData
+  }
 
   const filteredItems = selectedCategory === 'All' 
     ? menuItems 
@@ -447,16 +453,20 @@ function MenuContent() {
                   </div>
                 )}
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-4">
                   <div className="text-brown-400 text-sm flex items-center">
                     <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     {item.preparationTime} min
                   </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-2">
                   <button 
                     onClick={() => {
-                      if (isAuthenticated) {
+                      if (isUserAuthenticated()) {
                         addToCart({
                           id: item.id,
                           name: item.name,
@@ -467,9 +477,36 @@ function MenuContent() {
                         window.location.href = '/login'
                       }
                     }}
-                    className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+                    className="flex-1 bg-brown-700 hover:bg-brown-600 text-white px-3 py-2 rounded-lg transition-all duration-200 font-medium border border-brown-600 hover:border-brown-500 hover:scale-105 text-sm"
                   >
-                    {isAuthenticated ? 'Add to Cart' : 'Login to Order'}
+                    {isUserAuthenticated() ? '🛒 Add to Cart' : 'Login to Order'}
+                  </button>
+                  
+                  <button 
+                    onClick={() => {
+                      if (isUserAuthenticated()) {
+                        // Create a temporary cart with just this item
+                        const singleItem = {
+                          id: item.id,
+                          name: item.name,
+                          price: item.price,
+                          image: item.image,
+                          quantity: 1
+                        }
+                        // Store single item in sessionStorage for direct checkout
+                        sessionStorage.setItem('buyNowItem', JSON.stringify(singleItem))
+                        // Navigate to checkout immediately
+                        window.location.href = '/checkout?buyNow=true'
+                      } else {
+                        window.location.href = '/login'
+                      }
+                    }}
+                    className="flex-1 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-3 py-2 rounded-lg transition-all duration-200 font-semibold shadow-lg hover:shadow-amber-500/25 hover:scale-105 text-sm relative overflow-hidden group"
+                  >
+                    <span className="relative z-10">
+                      {isUserAuthenticated() ? '⚡ Buy Now' : 'Login to Buy'}
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
                   </button>
                 </div>
               </div>
