@@ -26,7 +26,7 @@ function CheckoutPage() {
   const { items, total, clearCart, closeCart } = useCart()
   const router = useRouter()
   const { initiatePayment, isLoading: paymentLoading } = useRazorpay()
-  const { user } = useAuth()
+  const { user, isAuthenticated } = useAuth()
 
   // Buy Now functionality - check for direct purchase
   const [isBuyNow, setIsBuyNow] = useState(false)
@@ -259,6 +259,37 @@ function CheckoutPage() {
           {isBuyNow ? 'Express Checkout' : 'Checkout'}
         </h1>
         
+        {/* Authentication Check */}
+        {!isAuthenticated && (
+          <div className="mb-8 bg-gradient-to-r from-blue-900 to-blue-800 p-6 rounded-2xl border border-blue-500 border-opacity-30">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-white mb-4">🔐 Login Required to Complete Order</h2>
+              <p className="text-blue-100 mb-6">
+                Please login or create an account to place your order. Don&apos;t worry, your cart items are saved!
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button
+                  onClick={() => router.push('/login')}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors"
+                >
+                  Login with OTP
+                </button>
+                <button
+                  onClick={() => router.push('/register')}
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors"
+                >
+                  Create Account
+                </button>
+              </div>
+              <p className="text-blue-200 text-sm mt-4">
+                Already have items in cart? They&apos;ll be here when you get back! 🛒
+              </p>
+            </div>
+          </div>
+        )}
+        
+        {/* Checkout Form - Only show for authenticated users */}
+        {isAuthenticated && (
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Order Summary */}
           <div className="bg-brown-800 bg-opacity-30 backdrop-blur-sm rounded-2xl p-6 border border-amber-300 border-opacity-20">
@@ -587,9 +618,10 @@ function CheckoutPage() {
             </button>
           </div>
         </div>
+        )}
       </div>
     </div>
   )
 }
 
-export default withAuth(CheckoutPage)
+export default CheckoutPage

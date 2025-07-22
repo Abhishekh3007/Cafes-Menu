@@ -5,10 +5,13 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 
 export default function LoginPage() {
-  // Step 1: Mobile input, Step 2: OTP verification
-  const [step, setStep] = useState<1 | 2>(1)
+  // Step 1: Mobile input, Step 2: OTP verification, Step 3: Profile setup (for new users)
+  const [step, setStep] = useState<1 | 2 | 3>(1)
   const [mobile, setMobile] = useState('')
   const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [dateOfBirth, setDateOfBirth] = useState('')
+  const [gender, setGender] = useState('')
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -122,8 +125,61 @@ export default function LoginPage() {
       return
     }
 
-    if (isNewUser && !name.trim()) {
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const res = await fetch('/api/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          mobile, 
+          otp: otpCode
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to verify OTP')
+      }
+
+      // If this is a new user, go to profile setup
+      if (data.isNewUser) {
+        setStep(3)
+      } else {
+        login(data.user)
+        router.push('/')
+      }
+
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Complete profile setup
+  const handleCompleteProfile = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!name.trim()) {
       setError('Please enter your name')
+      return
+    }
+
+    if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) {
+      setError('Please enter a valid email address')
+      return
+    }
+
+    if (!dateOfBirth) {
+      setError('Please enter your date of birth')
+      return
+    }
+
+    if (!gender) {
+      setError('Please select your gender')
       return
     }
 
@@ -136,15 +192,18 @@ export default function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           mobile, 
-          otp: otpCode,
-          ...(isNewUser && { name: name.trim() })
+          otp: otp.join(''),
+          name: name.trim(),
+          email: email.trim(),
+          dateOfBirth,
+          gender
         }),
       })
 
       const data = await res.json()
 
       if (!res.ok) {
-        throw new Error(data.message || 'Failed to verify OTP')
+        throw new Error(data.message || 'Failed to complete profile')
       }
 
       login(data.user)
@@ -190,10 +249,12 @@ export default function LoginPage() {
         <div className="bg-brown-800 bg-opacity-30 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-amber-300 border-opacity-20 shadow-2xl">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-display font-bold text-white">
-              {step === 1 ? 'Login' : 'Verify OTP'}
+              {step === 1 ? 'Login' : step === 2 ? 'Verify OTP' : 'Complete Profile'}
             </h1>
             <p className="text-brown-200 mt-2">
-              {step === 1 ? 'Enter your mobile number' : `Enter OTP sent to ${mobile}`}
+              {step === 1 ? 'Enter your mobile number' : 
+               step === 2 ? `Enter OTP sent to ${mobile}` :
+               'Tell us about yourself'}
             </p>
           </div>
 
@@ -228,7 +289,7 @@ export default function LoginPage() {
                 {isLoading ? 'Sending OTP...' : 'Send OTP'}
               </button>
             </form>
-          ) : (
+          ) : step === 2 ? (
             <form onSubmit={handleVerifyOTP} className="space-y-6">
               {isNewUser && (
                 <div>
@@ -303,7 +364,100 @@ export default function LoginPage() {
                 </button>
               </div>
             </form>
-          )}
+          ) : step === 3 ? (
+            <form onSubmit={handleCompleteProfile} className="space-y-6">
+              <div className="grid grid-cols-1 gap-4">
+                <div>
+                  <label className="block text-white text-sm font-medium mb-2" htmlFor="name">
+                    Full Name *
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400 transition-colors"
+                    placeholder="Enter your full name"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-white text-sm font-medium mb-2" htmlFor="email">
+                    Email Address *
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400 transition-colors"
+                    placeholder="Enter your email address"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-white text-sm font-medium mb-2" htmlFor="dateOfBirth">
+                    Date of Birth *
+                  </label>
+                  <input
+                    id="dateOfBirth"
+                    type="date"
+                    value={dateOfBirth}
+                    onChange={(e) => setDateOfBirth(e.target.value)}
+                    className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400 transition-colors"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-white text-sm font-medium mb-2" htmlFor="gender">
+                    Gender *
+                  </label>
+                  <select
+                    id="gender"
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                    className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400 transition-colors"
+                    required
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="bg-amber-900 bg-opacity-20 rounded-lg p-4">
+                <p className="text-amber-200 text-sm">
+                  🎉 Welcome to SONNAS! This information helps us personalize your experience and process orders efficiently.
+                </p>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-semibold py-3 rounded-lg transition-all duration-300 shadow-xl hover:shadow-amber-500/25 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? 'Creating Account...' : 'Complete Setup'}
+              </button>
+
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStep(2)
+                    setError(null)
+                  }}
+                  className="text-brown-300 hover:text-brown-200 text-sm transition-colors"
+                >
+                  ← Back to OTP
+                </button>
+              </div>
+            </form>
+          ) : null}
         </div>
       </div>
     </div>

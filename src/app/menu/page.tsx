@@ -15,7 +15,7 @@ const menuItems = [
     id: 1,
     name: 'Korean Bun',
     description: 'Traditional Korean-style steamed bun',
-    price: 1.60,
+    price: 120,
     image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Small Bites',
     rating: 4.5,
@@ -27,7 +27,7 @@ const menuItems = [
     id: 2,
     name: 'Chilli Korean Bun',
     description: 'Spicy Korean-style steamed bun with chili',
-    price: 1.70,
+    price: 140,
     image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Small Bites',
     rating: 4.6,
@@ -39,7 +39,7 @@ const menuItems = [
     id: 3,
     name: 'Potato Wedges',
     description: 'Crispy seasoned potato wedges',
-    price: 1.20,
+    price: 80,
     image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Small Bites',
     rating: 4.3,
@@ -51,7 +51,7 @@ const menuItems = [
     id: 4,
     name: 'Chilli Garlic Wedges',
     description: 'Spicy potato wedges with chili and garlic',
-    price: 1.50,
+    price: 100,
     image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Small Bites',
     rating: 4.4,
@@ -63,7 +63,7 @@ const menuItems = [
     id: 5,
     name: 'Cauliflower Florets',
     description: 'Crispy battered cauliflower florets',
-    price: 2.60,
+    price: 180,
     image: 'https://images.unsplash.com/photo-1566740933430-b5e70b06d2d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Small Bites',
     rating: 4.2,
@@ -75,7 +75,7 @@ const menuItems = [
     id: 6,
     name: 'Sliders',
     description: 'Mini burgers perfect for sharing',
-    price: 1.85,
+    price: 150,
     image: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Small Bites',
     rating: 4.7,
@@ -87,7 +87,7 @@ const menuItems = [
     id: 7,
     name: 'Sliders Appetizers',
     description: 'Mini burgers (2 sliders)',
-    price: 2.60,
+    price: 220,
     image: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Small Bites',
     rating: 4.7,
@@ -99,7 +99,7 @@ const menuItems = [
     id: 8,
     name: 'Paneer Appetizers',
     description: 'Spiced paneer bites',
-    price: 2.60,
+    price: 200,
     image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Small Bites',
     rating: 4.6,
@@ -113,7 +113,7 @@ const menuItems = [
     id: 9,
     name: 'Margherita Pizza',
     description: 'Hand Folio Thin Crust pizza with tomato and mozzarella',
-    price: 2.30,
+    price: 250,
     image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Pizza',
     rating: 4.5,
@@ -125,7 +125,7 @@ const menuItems = [
     id: 10,
     name: 'Mexican Pizza',
     description: 'Loaded with vegetables on thin crust',
-    price: 2.70,
+    price: 320,
     image: 'https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Pizza',
     rating: 4.4,
@@ -137,7 +137,7 @@ const menuItems = [
     id: 11,
     name: 'Fantasy Pizza',
     description: 'Onions, Bell peppers, Paneer, Coriander, and Oregano',
-    price: 2.90,
+    price: 350,
     image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Pizza',
     rating: 4.6,
@@ -149,7 +149,7 @@ const menuItems = [
     id: 12,
     name: 'Cleilia Pizza',
     description: 'Mushroom, Pickled Onion, Chilli Garlic Oil, Basil',
-    price: 2.90,
+    price: 350,
     image: 'https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Pizza',
     rating: 4.7,
@@ -161,7 +161,7 @@ const menuItems = [
     id: 13,
     name: 'Neapolitan Pizza',
     description: 'Onions, Bell peppers, Black Olives, Jalepeno, Chilli Garlic Oil',
-    price: 2.90,
+    price: 350,
     image: 'https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Pizza',
     rating: 4.5,
@@ -173,7 +173,7 @@ const menuItems = [
     id: 14,
     name: 'Rustic Pizza',
     description: 'Onions, Garlic Oil, Spinach, Oregano',
-    price: 2.90,
+    price: 320,
     image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Pizza',
     rating: 4.3,
@@ -187,7 +187,7 @@ const menuItems = [
     id: 15,
     name: 'Amritsari Chole with House Baked Kulche',
     description: 'Homemade Punjabi style Chhole filled with love',
-    price: 2.40,
+    price: 280,
     image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'House Specials',
     rating: 4.8,
@@ -199,7 +199,7 @@ const menuItems = [
     id: 16,
     name: 'Khao Suey',
     description: 'Coconut based Curry filled with noodles and loads of condiments',
-    price: 2.80,
+    price: 320,
     image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'House Specials',
     rating: 4.7,
@@ -211,7 +211,7 @@ const menuItems = [
     id: 17,
     name: 'Paneer Tikka/Butter Masala with Rice or Kulcha',
     description: 'Creamy Paneer Tikka (spicy) or Butter (sweet) Masala served with Rice or Kulcha (your choice)',
-    price: 2.95,
+    price: 380,
     image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'House Specials',
     rating: 4.9,
@@ -223,7 +223,7 @@ const menuItems = [
     id: 18,
     name: 'Dal Makhni with Rice or Kulcha',
     description: 'Creamy homemade Kali Dal served with Rice or Kulcha (your choice)',
-    price: 2.95,
+    price: 350,
     image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'House Specials',
     rating: 4.8,
@@ -235,7 +235,7 @@ const menuItems = [
     id: 19,
     name: 'Paneer Tikka',
     description: 'Grilled spiced paneer cubes',
-    price: 2.90,
+    price: 320,
     image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'House Specials',
     rating: 4.7,
@@ -249,7 +249,7 @@ const menuItems = [
     id: 20,
     name: 'Iced Teas',
     description: 'Refreshing iced tea varieties',
-    price: 1.20,
+    price: 80,
     image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Drinks',
     rating: 4.4,
@@ -261,7 +261,7 @@ const menuItems = [
     id: 21,
     name: 'Peach/Lemon/Blueberry',
     description: 'Fruit flavored refreshing drinks',
-    price: 1.30,
+    price: 90,
     image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Drinks',
     rating: 4.5,
@@ -273,7 +273,7 @@ const menuItems = [
     id: 22,
     name: 'Cucumber Lemonade',
     description: 'Fresh cucumber and lemon drink',
-    price: 1.40,
+    price: 110,
     image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Drinks',
     rating: 4.6,
@@ -285,7 +285,7 @@ const menuItems = [
     id: 23,
     name: 'Mojito',
     description: 'Classic mint and lime refresher',
-    price: 1.40,
+    price: 120,
     image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Drinks',
     rating: 4.7,
@@ -297,7 +297,7 @@ const menuItems = [
     id: 24,
     name: 'Cold Coffee',
     description: 'Refreshing iced coffee',
-    price: 1.20,
+    price: 100,
     image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Drinks',
     rating: 4.5,
@@ -309,7 +309,7 @@ const menuItems = [
     id: 25,
     name: 'Milkshakes',
     description: 'KitKat/Vanilla/Strawberry/Chocolate varieties',
-    price: 1.60,
+    price: 150,
     image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Drinks',
     rating: 4.8,
@@ -334,12 +334,6 @@ function MenuContent() {
       setSelectedCategory(categoryFromUrl)
     }
   }, [categoryFromUrl])
-
-  // Helper function to check if user is truly authenticated
-  const isUserAuthenticated = () => {
-    const userData = localStorage.getItem('userData')
-    return isAuthenticated && user && userData
-  }
 
   const filteredItems = selectedCategory === 'All' 
     ? menuItems 
@@ -401,12 +395,6 @@ function MenuContent() {
                 <div className="absolute top-4 left-4 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
                   {item.category}
                 </div>
-                <div className="absolute top-4 right-4 bg-black bg-opacity-60 text-white px-2 py-1 rounded-lg text-sm flex items-center">
-                  <svg className="w-4 h-4 text-yellow-400 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                  {item.rating}
-                </div>
               </div>
               
               <div className="p-6">
@@ -415,7 +403,7 @@ function MenuContent() {
                     {item.name}
                   </h3>
                   <span className="text-amber-300 font-bold text-lg">
-                    ${item.price}
+                    Rs {item.price}
                   </span>
                 </div>
                 
@@ -466,45 +454,37 @@ function MenuContent() {
                 <div className="flex gap-2">
                   <button 
                     onClick={() => {
-                      if (isUserAuthenticated()) {
-                        addToCart({
-                          id: item.id,
-                          name: item.name,
-                          price: item.price,
-                          image: item.image
-                        })
-                      } else {
-                        window.location.href = '/login'
-                      }
+                      addToCart({
+                        id: item.id,
+                        name: item.name,
+                        price: item.price,
+                        image: item.image
+                      })
                     }}
                     className="flex-1 bg-brown-700 hover:bg-brown-600 text-white px-3 py-2 rounded-lg transition-all duration-200 font-medium border border-brown-600 hover:border-brown-500 hover:scale-105 text-sm"
                   >
-                    {isUserAuthenticated() ? '🛒 Add to Cart' : 'Login to Order'}
+                    🛒 Add to Cart
                   </button>
                   
                   <button 
                     onClick={() => {
-                      if (isUserAuthenticated()) {
-                        // Create a temporary cart with just this item
-                        const singleItem = {
-                          id: item.id,
-                          name: item.name,
-                          price: item.price,
-                          image: item.image,
-                          quantity: 1
-                        }
-                        // Store single item in sessionStorage for direct checkout
-                        sessionStorage.setItem('buyNowItem', JSON.stringify(singleItem))
-                        // Navigate to checkout immediately
-                        window.location.href = '/checkout?buyNow=true'
-                      } else {
-                        window.location.href = '/login'
+                      // Create a temporary cart with just this item
+                      const singleItem = {
+                        id: item.id,
+                        name: item.name,
+                        price: item.price,
+                        image: item.image,
+                        quantity: 1
                       }
+                      // Store single item in sessionStorage for direct checkout
+                      sessionStorage.setItem('buyNowItem', JSON.stringify(singleItem))
+                      // Navigate to checkout immediately
+                      window.location.href = '/checkout?buyNow=true'
                     }}
                     className="flex-1 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-3 py-2 rounded-lg transition-all duration-200 font-semibold shadow-lg hover:shadow-amber-500/25 hover:scale-105 text-sm relative overflow-hidden group"
                   >
                     <span className="relative z-10">
-                      {isUserAuthenticated() ? '⚡ Buy Now' : 'Login to Buy'}
+                      ⚡ Buy Now
                     </span>
                     <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
                   </button>
@@ -515,7 +495,7 @@ function MenuContent() {
         </div>
 
         {/* Floating Cart Button */}
-        {isAuthenticated && items.length > 0 && (
+        {items.length > 0 && (
           <div className="fixed bottom-4 right-4 z-40">
             <button
               onClick={toggleCart}

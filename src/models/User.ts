@@ -7,16 +7,23 @@ export interface IUser extends Document {
   password?: string
   role: 'customer' | 'admin'
   phone?: string
+  dateOfBirth?: Date
+  gender?: 'male' | 'female' | 'other'
   address?: {
+    fullName?: string
     street: string
     city: string
     state: string
     zipCode: string
+    landmark?: string
+    addressType?: 'home' | 'work' | 'other'
   }
   loyaltyPoints: number
   totalOrders: number
   isVerified: boolean
   verificationMethod: 'otp' | 'password'
+  profileComplete: boolean
+  lastLogin?: Date
   createdAt: Date
   updatedAt: Date
 }
@@ -51,11 +58,25 @@ const UserSchema = new Schema<IUser>({
     type: String,
     trim: true,
   },
+  dateOfBirth: {
+    type: Date,
+  },
+  gender: {
+    type: String,
+    enum: ['male', 'female', 'other'],
+  },
   address: {
+    fullName: String,
     street: String,
     city: String,
     state: String,
     zipCode: String,
+    landmark: String,
+    addressType: {
+      type: String,
+      enum: ['home', 'work', 'other'],
+      default: 'home',
+    },
   },
   loyaltyPoints: {
     type: Number,
@@ -75,6 +96,13 @@ const UserSchema = new Schema<IUser>({
     type: String,
     enum: ['otp', 'password'],
     default: 'otp',
+  },
+  profileComplete: {
+    type: Boolean,
+    default: false,
+  },
+  lastLogin: {
+    type: Date,
   },
 }, {
   timestamps: true,

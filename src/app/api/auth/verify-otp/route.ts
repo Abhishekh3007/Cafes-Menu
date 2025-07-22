@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken'
 
 export async function POST(request: NextRequest) {
   try {
-    const { mobile, otp, name } = await request.json()
+    const { mobile, otp, name, email, dateOfBirth, gender } = await request.json()
 
     // Validate input
     if (!mobile || !otp) {
@@ -53,13 +53,37 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Check if this is a new user (no name set) and basic info is provided
+    const isNewUser = !user.name || user.name === ''
+    
     // Update user verification status
     user.isVerified = true
+    user.lastLogin = new Date()
     
-    // If this is a new user and name is provided, update the name
-    if (name && (!user.name || user.name === '')) {
+    // If this is a new user or updating profile, update the fields
+    if (name && name.trim()) {
       user.name = name.trim()
     }
+    
+    if (email && email.trim()) {
+      user.email = email.trim()
+    }
+    
+    if (dateOfBirth) {
+      user.dateOfBirth = new Date(dateOfBirth)
+    }
+    
+    if (gender) {
+      user.gender = gender
+    }
+
+    // Check if profile is complete
+    user.profileComplete = !!(
+      user.name &&
+      user.email &&
+      user.dateOfBirth &&
+      user.gender
+    )
 
     await user.save()
 
@@ -78,14 +102,20 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({
       success: true,
       message: 'OTP verified successfully',
+      isNewUser,
       user: {
         id: user._id,
         name: user.name,
+        email: user.email,
         mobile: user.mobile,
         role: user.role,
         loyaltyPoints: user.loyaltyPoints,
         totalOrders: user.totalOrders,
-        isVerified: user.isVerified
+        isVerified: user.isVerified,
+        profileComplete: user.profileComplete,
+        dateOfBirth: user.dateOfBirth,
+        gender: user.gender,
+        address: user.address
       }
     })
 

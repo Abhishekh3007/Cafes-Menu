@@ -1,16 +1,10 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { IUser } from '@/models/User'
 
-interface User {
+interface User extends Partial<IUser> {
   id?: string
-  mobile: string
-  name?: string
-  email?: string
-  loyaltyPoints?: number
-  totalOrders?: number
-  role?: 'customer' | 'admin'
-  isVerified?: boolean
 }
 
 interface AuthContextType {

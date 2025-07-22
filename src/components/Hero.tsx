@@ -1,12 +1,10 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/context/AuthContext'
 import { useCart } from './CartProvider'
 
 export default function Hero() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { isAuthenticated, user, logout } = useAuth()
   const { toggleCart, items } = useCart()
 
@@ -86,70 +84,37 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Mobile menu button */}
-          <button 
-            className="md:hidden text-white"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-brown-800 border-t border-brown-700 shadow-xl">
-            <div className="px-4 py-4 space-y-4">
-              <Link href="/" className="block text-white hover:text-amber-300">Home</Link>
-              <Link href="/menu" className="block text-white hover:text-amber-300">Menu</Link>
-              <Link href="/about" className="block text-white hover:text-amber-300">About</Link>
-              <Link href="/contact" className="block text-white hover:text-amber-300 font-medium">📞 Contact Us</Link>
-              
-              {/* Mobile Cart Button - Prominent */}
-              <button 
-                onClick={toggleCart} 
-                className="w-full bg-amber-600 hover:bg-amber-700 text-white px-4 py-3 rounded-lg transition-all duration-300 font-medium"
-              >
-                <div className="flex items-center justify-center space-x-2">
-                  <span>🛒</span>
-                  <span>Cart</span>
-                  {itemCount > 0 && (
-                    <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 font-bold">
-                      {itemCount} items
-                    </span>
-                  )}
-                </div>
-              </button>
-              
-              <div className="border-t border-brown-700 pt-4 space-y-2">
-                {isAuthenticated ? (
-                  <div className="space-y-2">
-                    <div className="text-amber-300 font-medium">
-                      Hi, {user?.name || 'Guest'}!
-                    </div>
-                    <button onClick={logout} className="w-full text-left text-white hover:text-amber-300">
-                      Logout
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <Link href="/login">
-                      <button className="w-full bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg font-medium mb-2">
-                        Login with OTP
-                      </button>
-                    </Link>
-                    <Link href="/register">
-                      <button className="w-full bg-brown-600 hover:bg-brown-700 text-white px-6 py-2 rounded-lg">
-                        Sign Up
-                      </button>
-                    </Link>
-                  </>
+          {/* Mobile Cart Button - Only show cart and login for mobile since bottom nav handles navigation */}
+          <div className="md:hidden flex items-center space-x-2">
+            {/* Mobile Cart Button */}
+            <button 
+              onClick={toggleCart} 
+              className="relative bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-lg transition-all duration-300"
+            >
+              <div className="flex items-center space-x-1">
+                <span>🛒</span>
+                {itemCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                    {itemCount}
+                  </span>
                 )}
               </div>
-            </div>
+            </button>
+
+            {/* Mobile Auth */}
+            {isAuthenticated ? (
+              <button onClick={logout} className="text-white hover:text-amber-300 transition-colors text-sm">
+                Logout
+              </button>
+            ) : (
+              <Link href="/login">
+                <button className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors text-sm">
+                  Login
+                </button>
+              </Link>
+            )}
           </div>
-        )}
+        </div>
       </nav>
 
       {/* Hero Content */}
@@ -188,22 +153,6 @@ export default function Hero() {
                 Reserve Table
               </button>
             </Link>
-          </div>
-
-          {/* Elegant Stats */}
-          <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto">
-            <div className="text-center">
-              <div className="text-3xl font-display font-bold text-amber-300 mb-2">4.9★</div>
-              <div className="text-brown-200 text-sm font-medium">Customer Rating</div>
-            </div>
-            <div className="text-center border-l border-r border-brown-600 border-opacity-30">
-              <div className="text-3xl font-display font-bold text-amber-300 mb-2">50+</div>
-              <div className="text-brown-200 text-sm font-medium">Signature Dishes</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-display font-bold text-amber-300 mb-2">24/7</div>
-              <div className="text-brown-200 text-sm font-medium">Online Ordering</div>
-            </div>
           </div>
         </div>
       </div>
