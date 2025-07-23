@@ -12,9 +12,14 @@ export default function BottomNavigation() {
   const router = useRouter()
   const { isAuthenticated } = useAuth()
   const { isSignedIn, isLoaded } = useUser()
-  const { toggleCart, items } = useCart()
+  const { toggleCart, items, closeCart } = useCart()
 
   const itemCount = items.reduce((total, item) => total + item.quantity, 0)
+
+  const handleNavigation = (href: string) => {
+    closeCart() // Close cart when navigating
+    router.push(href)
+  }
 
   const navItems = [
     {
@@ -53,6 +58,7 @@ export default function BottomNavigation() {
   ]
 
   const handleProfileClick = () => {
+    closeCart() // Close cart when accessing profile/login
     if (isAuthenticated && isLoaded && isSignedIn) {
       // Navigate to profile page using Next.js router
       router.push('/profile')
@@ -102,8 +108,8 @@ export default function BottomNavigation() {
                   <span className="text-xs font-medium mt-1">{item.name}</span>
                 </button>
               ) : (
-                <Link
-                  href={item.href}
+                <button
+                  onClick={() => handleNavigation(item.href)}
                   className={`w-full h-full flex flex-col items-center justify-center transition-all duration-200 ${
                     isActive 
                       ? 'text-amber-300 bg-brown-700' 
@@ -112,7 +118,7 @@ export default function BottomNavigation() {
                 >
                   <span className="text-lg">{item.icon}</span>
                   <span className="text-xs font-medium mt-1">{item.name}</span>
-                </Link>
+                </button>
               )}
               
               {/* Active indicator */}

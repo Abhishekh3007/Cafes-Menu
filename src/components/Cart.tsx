@@ -120,9 +120,10 @@ export default function Cart() {
                     Proceed to Checkout
                   </button>
                 </Link>
+                {/* Hide clear cart button on mobile */}
                 <button
                   onClick={clearCart}
-                  className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium transition-colors"
+                  className="hidden md:block w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium transition-colors"
                 >
                   Clear Cart
                 </button>

@@ -9,7 +9,7 @@ import ClerkUserButton from './ClerkUserButton'
 export default function Hero() {
   const { isAuthenticated, user } = useAuth()
   const { isSignedIn, isLoaded } = useUser()
-  const { toggleCart, items } = useCart()
+  const { toggleCart, items, closeCart } = useCart()
 
   const itemCount = items.reduce((total, item) => total + item.quantity, 0)
 
@@ -31,16 +31,16 @@ export default function Hero() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-white hover:text-amber-300 transition-colors">
+            <Link href="/" onClick={closeCart} className="text-white hover:text-amber-300 transition-colors">
               Home
             </Link>
-            <Link href="/menu" className="text-white hover:text-amber-300 transition-colors">
+            <Link href="/menu" onClick={closeCart} className="text-white hover:text-amber-300 transition-colors">
               Menu
             </Link>
-            <Link href="/about" className="text-white hover:text-amber-300 transition-colors">
+            <Link href="/about" onClick={closeCart} className="text-white hover:text-amber-300 transition-colors">
               About
             </Link>
-            <Link href="/contact" className="text-white hover:text-amber-300 transition-colors font-medium">
+            <Link href="/contact" onClick={closeCart} className="text-white hover:text-amber-300 transition-colors font-medium">
               📞 Contact Us
             </Link>
             
@@ -71,12 +71,18 @@ export default function Hero() {
               ) : (
                 <>
                   <SignInButton mode="modal">
-                    <button className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg transition-colors font-medium">
+                    <button 
+                      onClick={closeCart}
+                      className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg transition-colors font-medium"
+                    >
                       Login
                     </button>
                   </SignInButton>
                   <SignUpButton mode="modal">
-                    <button className="bg-brown-700 hover:bg-brown-600 text-white px-6 py-2 rounded-lg transition-colors">
+                    <button 
+                      onClick={closeCart}
+                      className="bg-brown-700 hover:bg-brown-600 text-white px-6 py-2 rounded-lg transition-colors"
+                    >
                       Sign Up
                     </button>
                   </SignUpButton>
@@ -107,7 +113,10 @@ export default function Hero() {
               <ClerkUserButton />
             ) : (
               <SignInButton mode="modal">
-                <button className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors text-sm">
+                <button 
+                  onClick={closeCart}
+                  className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors text-sm"
+                >
                   Login
                 </button>
               </SignInButton>
@@ -141,13 +150,13 @@ export default function Hero() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
-            <Link href="/menu">
+            <Link href="/menu" onClick={closeCart}>
               <button className="group relative overflow-hidden bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white text-lg font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-2xl hover:shadow-amber-500/25 hover:scale-105 min-w-[200px]">
                 <span className="relative z-10">Order Online</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               </button>
             </Link>
-            <Link href="/reserve">
+            <Link href="/reserve" onClick={closeCart}>
               <button className="group border-2 border-white text-white hover:bg-white hover:text-brown-900 text-lg font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-2xl hover:shadow-white/25 hover:scale-105 min-w-[200px]">
                 Eat With Us
               </button>
