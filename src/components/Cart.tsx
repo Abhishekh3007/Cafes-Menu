@@ -49,7 +49,7 @@ export default function Cart() {
           </div>
 
           {/* Cart Items */}
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto p-4 max-h-[calc(100vh-200px)]">
             {items.length === 0 ? (
               <div className="text-center py-10">
                 <svg className="w-12 h-12 mx-auto text-brown-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,7 +73,7 @@ export default function Cart() {
                     
                     <div className="flex-1 min-w-0">
                       <h3 className="text-white font-medium truncate">{item.name}</h3>
-                      <p className="text-amber-300 font-semibold">${item.price.toFixed(2)}</p>
+                      <p className="text-amber-300 font-semibold">₹{item.price.toFixed(2)}</p>
                     </div>
 
                     <div className="flex items-center space-x-1">
@@ -108,15 +108,15 @@ export default function Cart() {
 
           {/* Footer */}
           {items.length > 0 && (
-            <div className="border-t border-brown-700 p-4">
+            <div className="flex-shrink-0 border-t border-brown-700 p-4 bg-brown-800">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-white font-semibold">Total:</span>
-                <span className="text-amber-300 font-bold text-lg">${total.toFixed(2)}</span>
+                <span className="text-amber-300 font-bold text-lg">₹{total.toFixed(2)}</span>
               </div>
               
               <div className="space-y-2">
                 <Link href="/checkout" onClick={toggleCart}>
-                  <button className="w-full bg-amber-600 hover:bg-amber-700 text-white py-2.5 rounded-lg font-semibold transition-colors">
+                  <button className="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-lg font-bold text-lg transition-colors">
                     Proceed to Checkout
                   </button>
                 </Link>
