@@ -19,6 +19,8 @@ export interface IMenuItem extends Document {
   isPopular: boolean
   rating: number
   reviews: number
+  isSpicy: number // 0 = not spicy, 1 = mild spicy (🌶️), 2 = very spicy (🌶️🌶️)
+  isSweet: number // 0 = not sweet, 1 = mildly sweet (🧁🧁), 2 = very sweet (🧁🧁🧁)
   createdAt: Date
   updatedAt: Date
 }
@@ -85,6 +87,18 @@ const MenuItemSchema = new Schema<IMenuItem>({
     type: Number,
     default: 0,
     min: 0,
+  },
+  isSpicy: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 2,
+  },
+  isSweet: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 2,
   },
 }, {
   timestamps: true,

@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useCart } from '@/components/CartProvider'
 import { useAuth } from '@/context/AuthContext'
+import { getMenuItemEmojis } from '@/lib/menuEmojis'
 import Cart from '@/components/Cart'
 
 // Menu data based on the SONNAS menu image provided
@@ -21,7 +22,9 @@ const menuItems = [
     rating: 4.5,
     ingredients: ['Korean flour', 'Yeast', 'Sesame'],
     allergens: ['Gluten', 'Sesame'],
-    preparationTime: 15
+    preparationTime: 15,
+    isSpicy: 0,
+    isSweet: 1
   },
   {
     id: 2,
@@ -33,7 +36,9 @@ const menuItems = [
     rating: 4.6,
     ingredients: ['Korean flour', 'Chili', 'Spices'],
     allergens: ['Gluten'],
-    preparationTime: 15
+    preparationTime: 15,
+    isSpicy: 2,
+    isSweet: 0
   },
   {
     id: 3,
@@ -45,7 +50,9 @@ const menuItems = [
     rating: 4.3,
     ingredients: ['Potatoes', 'Herbs', 'Salt'],
     allergens: [],
-    preparationTime: 12
+    preparationTime: 12,
+    isSpicy: 0,
+    isSweet: 0
   },
   {
     id: 4,
@@ -57,7 +64,9 @@ const menuItems = [
     rating: 4.4,
     ingredients: ['Potatoes', 'Chili', 'Garlic'],
     allergens: [],
-    preparationTime: 12
+    preparationTime: 12,
+    isSpicy: 1,
+    isSweet: 0
   },
   {
     id: 5,
@@ -69,7 +78,9 @@ const menuItems = [
     rating: 4.2,
     ingredients: ['Cauliflower', 'Batter', 'Spices'],
     allergens: ['Gluten'],
-    preparationTime: 15
+    preparationTime: 15,
+    isSpicy: 0,
+    isSweet: 0
   },
   {
     id: 6,
@@ -81,7 +92,9 @@ const menuItems = [
     rating: 4.7,
     ingredients: ['Mini bun', 'Beef patty', 'Cheese'],
     allergens: ['Gluten', 'Dairy'],
-    preparationTime: 10
+    preparationTime: 10,
+    isSpicy: 0,
+    isSweet: 0
   },
   {
     id: 7,
@@ -93,7 +106,9 @@ const menuItems = [
     rating: 4.7,
     ingredients: ['Mini bun', 'Beef patty', 'Cheese'],
     allergens: ['Gluten', 'Dairy'],
-    preparationTime: 10
+    preparationTime: 10,
+    isSpicy: 0,
+    isSweet: 0
   },
   {
     id: 8,
@@ -105,7 +120,9 @@ const menuItems = [
     rating: 4.6,
     ingredients: ['Paneer', 'Spices', 'Herbs'],
     allergens: ['Dairy'],
-    preparationTime: 15
+    preparationTime: 15,
+    isSpicy: 1,
+    isSweet: 0
   },
 
   // Pizza
@@ -119,7 +136,9 @@ const menuItems = [
     rating: 4.5,
     ingredients: ['Thin crust', 'Tomato sauce', 'Mozzarella'],
     allergens: ['Gluten', 'Dairy'],
-    preparationTime: 15
+    preparationTime: 15,
+    isSpicy: 0,
+    isSweet: 0
   },
   {
     id: 10,
@@ -131,7 +150,9 @@ const menuItems = [
     rating: 4.4,
     ingredients: ['Thin crust', 'Mixed vegetables', 'Cheese'],
     allergens: ['Gluten', 'Dairy'],
-    preparationTime: 18
+    preparationTime: 18,
+    isSpicy: 1,
+    isSweet: 0
   },
   {
     id: 11,
@@ -143,7 +164,9 @@ const menuItems = [
     rating: 4.6,
     ingredients: ['Onions', 'Bell peppers', 'Paneer', 'Coriander', 'Oregano'],
     allergens: ['Gluten', 'Dairy'],
-    preparationTime: 20
+    preparationTime: 20,
+    isSpicy: 0,
+    isSweet: 0
   },
   {
     id: 12,
@@ -155,7 +178,9 @@ const menuItems = [
     rating: 4.7,
     ingredients: ['Mushroom', 'Pickled Onion', 'Chilli Garlic Oil', 'Basil'],
     allergens: ['Gluten', 'Dairy'],
-    preparationTime: 20
+    preparationTime: 20,
+    isSpicy: 2,
+    isSweet: 0
   },
   {
     id: 13,
@@ -167,7 +192,9 @@ const menuItems = [
     rating: 4.5,
     ingredients: ['Onions', 'Bell peppers', 'Black Olives', 'Jalepeno', 'Chilli Garlic Oil'],
     allergens: ['Gluten', 'Dairy'],
-    preparationTime: 20
+    preparationTime: 20,
+    isSpicy: 2,
+    isSweet: 0
   },
   {
     id: 14,
@@ -179,7 +206,9 @@ const menuItems = [
     rating: 4.3,
     ingredients: ['Onions', 'Garlic Oil', 'Spinach', 'Oregano'],
     allergens: ['Gluten', 'Dairy'],
-    preparationTime: 18
+    preparationTime: 18,
+    isSpicy: 0,
+    isSweet: 0
   },
 
   // House Specials
@@ -193,7 +222,9 @@ const menuItems = [
     rating: 4.8,
     ingredients: ['Chickpeas', 'Kulcha bread', 'Punjabi spices'],
     allergens: ['Gluten'],
-    preparationTime: 25
+    preparationTime: 25,
+    isSpicy: 1,
+    isSweet: 0
   },
   {
     id: 16,
@@ -205,7 +236,9 @@ const menuItems = [
     rating: 4.7,
     ingredients: ['Coconut curry', 'Noodles', 'Various condiments'],
     allergens: ['Gluten'],
-    preparationTime: 20
+    preparationTime: 20,
+    isSpicy: 1,
+    isSweet: 1
   },
   {
     id: 17,
@@ -217,7 +250,9 @@ const menuItems = [
     rating: 4.9,
     ingredients: ['Paneer', 'Tomato gravy', 'Rice/Kulcha'],
     allergens: ['Dairy', 'Gluten'],
-    preparationTime: 25
+    preparationTime: 25,
+    isSpicy: 2,
+    isSweet: 2
   },
   {
     id: 18,
@@ -229,7 +264,9 @@ const menuItems = [
     rating: 4.8,
     ingredients: ['Black lentils', 'Cream', 'Rice/Kulcha'],
     allergens: ['Dairy', 'Gluten'],
-    preparationTime: 30
+    preparationTime: 30,
+    isSpicy: 0,
+    isSweet: 1
   },
   {
     id: 19,
@@ -241,7 +278,9 @@ const menuItems = [
     rating: 4.7,
     ingredients: ['Paneer', 'Spices', 'Yogurt marinade'],
     allergens: ['Dairy'],
-    preparationTime: 20
+    preparationTime: 20,
+    isSpicy: 2,
+    isSweet: 0
   },
 
   // Drinks
@@ -255,7 +294,9 @@ const menuItems = [
     rating: 4.4,
     ingredients: ['Tea', 'Ice', 'Natural flavors'],
     allergens: [],
-    preparationTime: 3
+    preparationTime: 3,
+    isSpicy: 0,
+    isSweet: 0
   },
   {
     id: 21,
@@ -267,7 +308,9 @@ const menuItems = [
     rating: 4.5,
     ingredients: ['Fruit juice', 'Water', 'Natural flavors'],
     allergens: [],
-    preparationTime: 2
+    preparationTime: 2,
+    isSpicy: 0,
+    isSweet: 2
   },
   {
     id: 22,
@@ -279,7 +322,9 @@ const menuItems = [
     rating: 4.6,
     ingredients: ['Cucumber', 'Lemon', 'Mint'],
     allergens: [],
-    preparationTime: 5
+    preparationTime: 5,
+    isSpicy: 0,
+    isSweet: 1
   },
   {
     id: 23,
@@ -291,7 +336,9 @@ const menuItems = [
     rating: 4.7,
     ingredients: ['Mint', 'Lime', 'Soda water'],
     allergens: [],
-    preparationTime: 4
+    preparationTime: 4,
+    isSpicy: 0,
+    isSweet: 0
   },
   {
     id: 24,
@@ -303,7 +350,9 @@ const menuItems = [
     rating: 4.5,
     ingredients: ['Coffee', 'Ice', 'Milk'],
     allergens: ['Dairy'],
-    preparationTime: 3
+    preparationTime: 3,
+    isSpicy: 0,
+    isSweet: 1
   },
   {
     id: 25,
@@ -315,7 +364,9 @@ const menuItems = [
     rating: 4.8,
     ingredients: ['Milk', 'Ice cream', 'Flavoring'],
     allergens: ['Dairy', 'Gluten'],
-    preparationTime: 5
+    preparationTime: 5,
+    isSpicy: 0,
+    isSweet: 2
   }
 ]
 
@@ -399,9 +450,16 @@ function MenuContent() {
               
               <div className="p-6">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-xl font-display font-semibold text-white">
-                    {item.name}
-                  </h3>
+                  <div className="flex flex-col">
+                    <h3 className="text-xl font-display font-semibold text-white">
+                      {item.name}
+                    </h3>
+                    {getMenuItemEmojis(item.isSpicy, item.isSweet) && (
+                      <div className="text-lg mt-1">
+                        {getMenuItemEmojis(item.isSpicy, item.isSweet)}
+                      </div>
+                    )}
+                  </div>
                   <span className="text-amber-300 font-bold text-lg">
                     Rs {item.price}
                   </span>
