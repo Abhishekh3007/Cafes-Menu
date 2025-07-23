@@ -1,7 +1,0 @@
-{
-  "/api/orders/route": "app/api/orders/route.js",
-  "/page": "app/page.js",
-  "/login/page": "app/login/page.js",
-  "/profile/page": "app/profile/page.js",
-  "/menu/page": "app/menu/page.js"
-}

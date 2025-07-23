@@ -22,7 +22,7 @@ export function middleware(request: NextRequest) {
 
   if (!token) {
     // Redirect to login if no token
-    return NextResponse.redirect(new URL('/otp-login', request.url))
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 
   try {
@@ -31,7 +31,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.next()
   } catch (error) {
     // Invalid token, redirect to login
-    const response = NextResponse.redirect(new URL('/otp-login', request.url))
+    const response = NextResponse.redirect(new URL('/login', request.url))
     // Clear invalid token
     response.cookies.delete('token')
     return response
