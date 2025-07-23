@@ -8,6 +8,7 @@ function OrderSuccessContent() {
   const router = useRouter()
   const orderId = searchParams.get('orderId')
   const orderType = searchParams.get('orderType') || 'delivery'
+  const paymentMethod = searchParams.get('paymentMethod')
   const [timeLeft, setTimeLeft] = useState(10)
 
   useEffect(() => {
@@ -47,7 +48,18 @@ function OrderSuccessContent() {
 
           <div className="space-y-4 text-brown-200 mb-8">
             <p>🎉 Thank you for your order!</p>
-            <p>📱 You will receive a confirmation call shortly</p>
+            
+            {paymentMethod === 'upi' ? (
+              <div className="bg-amber-900 bg-opacity-30 rounded-lg p-4 border border-amber-600 border-opacity-30">
+                <p className="text-amber-300 font-medium mb-2">📱 UPI Payment Instructions:</p>
+                <p className="text-sm">• If payment app didn&apos;t open automatically, please check your UPI app</p>
+                <p className="text-sm">• Complete the payment using Order ID: <span className="font-bold">#{orderId}</span></p>
+                <p className="text-sm">• Your order will be confirmed once payment is completed</p>
+              </div>
+            ) : (
+              <p>📱 You will receive a confirmation call shortly</p>
+            )}
+            
             {orderType === 'delivery' ? (
               <>
                 <p>🚚 Expected delivery time: 30-45 minutes</p>

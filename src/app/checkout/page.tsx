@@ -6,6 +6,7 @@ import { useCart } from '@/components/CartProvider'
 import { useAuth } from '@/context/AuthContext'
 import { useRazorpay } from '@/hooks/useRazorpay'
 import { SignInButton } from '@clerk/nextjs'
+import { validateUpiId } from '@/lib/upi'
 import LoyaltyPoints from '@/components/LoyaltyPoints'
 
 interface DeliveryAddress {
@@ -148,6 +149,11 @@ export default function CheckoutPage() {
       return false
     }
     
+    if (paymentMethod === 'upi' && upiId && !validateUpiId(upiId)) {
+      setError('Please enter a valid UPI ID (e.g., yourname@paytm)')
+      return false
+    }
+    
     return true
   }
 
@@ -190,6 +196,34 @@ export default function CheckoutPage() {
 
         orderData.paymentId = paymentResult.paymentId
         orderData.razorpayOrderId = paymentResult.orderId
+      } else if (paymentMethod === 'upi') {
+        // Generate UPI payment URL
+        const customerName = orderType === 'delivery' ? deliveryAddress.fullName : customerInfo.fullName
+        
+        const upiResponse = await fetch('/api/payment/upi', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            amount: finalTotal,
+            customerName,
+            orderId: `${Date.now()}`, // Generate temporary order ID
+          }),
+        })
+
+        if (!upiResponse.ok) {
+          throw new Error('Failed to generate UPI payment details')
+        }
+
+        const upiData = await upiResponse.json()
+        
+        // Store UPI payment details for the order
+        orderData.upiPaymentUrl = upiData.data.upiUrl
+        orderData.upiPaymentDetails = upiData.data.paymentDetails
+        
+        // Open UPI app immediately after order creation
+        setTimeout(() => {
+          window.location.href = upiData.data.upiUrl
+        }, 1000)
       }
 
       const response = await fetch('/api/orders', {
@@ -211,7 +245,7 @@ export default function CheckoutPage() {
         clearCart()
       }
 
-      router.push(`/order-success?orderId=${result.orderId}&orderType=${orderType}`)
+      router.push(`/order-success?orderId=${result.orderId}&orderType=${orderType}&paymentMethod=${paymentMethod}`)
 
     } catch (error: any) {
       setError(error.message || 'Failed to place order')
@@ -578,19 +612,28 @@ export default function CheckoutPage() {
                     <span className="text-2xl">📱</span>
                     <div>
                       <div className="text-white font-medium">UPI Payment</div>
-                      <div className="text-brown-300 text-sm">Pay using UPI ID</div>
+                      <div className="text-brown-300 text-sm">Pay instantly using UPI apps</div>
                     </div>
                   </div>
                 </label>
 
                 {paymentMethod === 'upi' && (
-                  <input
-                    type="text"
-                    placeholder="Enter your UPI ID (e.g., yourname@paytm)"
-                    value={upiId}
-                    onChange={(e) => setUpiId(e.target.value)}
-                    className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400 ml-7"
-                  />
+                  <div className="ml-7 space-y-3">
+                    <input
+                      type="text"
+                      placeholder="Enter your UPI ID for order confirmation (e.g., yourname@paytm)"
+                      value={upiId}
+                      onChange={(e) => setUpiId(e.target.value)}
+                      className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400"
+                    />
+                    <div className="text-brown-300 text-sm">
+                      💡 After placing order, you&apos;ll be redirected to your UPI app to complete payment
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="text-brown-300 text-xs">Supported apps:</span>
+                      <span className="text-amber-300 text-xs">Google Pay • PhonePe • Paytm • BHIM • WhatsApp</span>
+                    </div>
+                  </div>
                 )}
 
                 {/* Online Payment with Razorpay */}
