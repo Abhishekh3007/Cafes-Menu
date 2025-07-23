@@ -143,24 +143,21 @@ export default function Hero() {
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
             <Link href="/menu">
               <button className="group relative overflow-hidden bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white text-lg font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-2xl hover:shadow-amber-500/25 hover:scale-105 min-w-[200px]">
-                <span className="relative z-10">Explore Menu</span>
+                <span className="relative z-10">Order Online</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               </button>
             </Link>
             <Link href="/reserve">
               <button className="group border-2 border-white text-white hover:bg-white hover:text-brown-900 text-lg font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-2xl hover:shadow-white/25 hover:scale-105 min-w-[200px]">
-                Reserve Table
+                Eat With Us
               </button>
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Elegant scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center">
-        <div className="text-brown-300 text-sm mb-2 opacity-75">Scroll to explore</div>
-        <div className="w-px h-8 bg-gradient-to-b from-brown-300 to-transparent mx-auto"></div>
-      </div>
+  
+      
     </div>
   )
 }

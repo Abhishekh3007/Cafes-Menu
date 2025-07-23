@@ -58,7 +58,7 @@ export default function BottomNavigation() {
       router.push('/profile')
     } else {
       // Navigate to login page or trigger sign-in modal
-      router.push('/sign-in')
+      router.push('/login')
     }
   }
 

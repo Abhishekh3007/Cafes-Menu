@@ -51,7 +51,7 @@ const menuItems = [
     ingredients: ['Potatoes', 'Herbs', 'Salt'],
     allergens: [],
     preparationTime: 12,
-    isSpicy: 0,
+    isSpicy: 1,
     isSweet: 0
   },
   {
@@ -79,7 +79,7 @@ const menuItems = [
     ingredients: ['Cauliflower', 'Batter', 'Spices'],
     allergens: ['Gluten'],
     preparationTime: 15,
-    isSpicy: 0,
+    isSpicy: 1,
     isSweet: 0
   },
   {
@@ -93,7 +93,7 @@ const menuItems = [
     ingredients: ['Mini bun', 'Beef patty', 'Cheese'],
     allergens: ['Gluten', 'Dairy'],
     preparationTime: 10,
-    isSpicy: 0,
+    isSpicy: 1,
     isSweet: 0
   },
   {
@@ -107,7 +107,7 @@ const menuItems = [
     ingredients: ['Mini bun', 'Beef patty', 'Cheese'],
     allergens: ['Gluten', 'Dairy'],
     preparationTime: 10,
-    isSpicy: 0,
+    isSpicy: 1,
     isSweet: 0
   },
   {
@@ -138,7 +138,7 @@ const menuItems = [
     allergens: ['Gluten', 'Dairy'],
     preparationTime: 15,
     isSpicy: 0,
-    isSweet: 0
+    isSweet: 1
   },
   {
     id: 10,
@@ -165,7 +165,7 @@ const menuItems = [
     ingredients: ['Onions', 'Bell peppers', 'Paneer', 'Coriander', 'Oregano'],
     allergens: ['Gluten', 'Dairy'],
     preparationTime: 20,
-    isSpicy: 0,
+    isSpicy: 1,
     isSweet: 0
   },
   {
@@ -207,7 +207,7 @@ const menuItems = [
     ingredients: ['Onions', 'Garlic Oil', 'Spinach', 'Oregano'],
     allergens: ['Gluten', 'Dairy'],
     preparationTime: 18,
-    isSpicy: 0,
+    isSpicy: 1,
     isSweet: 0
   },
 
@@ -238,7 +238,7 @@ const menuItems = [
     allergens: ['Gluten'],
     preparationTime: 20,
     isSpicy: 1,
-    isSweet: 1
+    isSweet: 0
   },
   {
     id: 17,
@@ -252,7 +252,7 @@ const menuItems = [
     allergens: ['Dairy', 'Gluten'],
     preparationTime: 25,
     isSpicy: 2,
-    isSweet: 2
+    isSweet: 0
   },
   {
     id: 18,
@@ -296,7 +296,7 @@ const menuItems = [
     allergens: [],
     preparationTime: 3,
     isSpicy: 0,
-    isSweet: 0
+    isSweet: 1
   },
   {
     id: 21,
@@ -338,7 +338,7 @@ const menuItems = [
     allergens: [],
     preparationTime: 4,
     isSpicy: 0,
-    isSweet: 0
+    isSweet: 1
   },
   {
     id: 24,

@@ -13,21 +13,23 @@ export const getSpicyEmojis = (spicyLevel: number): string => {
 export const getSweetEmojis = (sweetLevel: number): string => {
   switch (sweetLevel) {
     case 1:
-      return '🧁🧁'
+      return '��'
     case 2:
-      return '🧁🧁🧁'
+      return '���'
     default:
       return ''
   }
 }
 
 export const getMenuItemEmojis = (isSpicy: number, isSweet: number): string => {
-  const spicyEmojis = getSpicyEmojis(isSpicy)
-  const sweetEmojis = getSweetEmojis(isSweet)
-  
-  if (spicyEmojis && sweetEmojis) {
-    return `${spicyEmojis} ${sweetEmojis}`
+  // Prioritize spicy over sweet to avoid mixing emojis
+  if (isSpicy > 0) {
+    return getSpicyEmojis(isSpicy)
   }
   
-  return spicyEmojis || sweetEmojis
+  if (isSweet > 0) {
+    return getSweetEmojis(isSweet)
+  }
+  
+  return ''
 }

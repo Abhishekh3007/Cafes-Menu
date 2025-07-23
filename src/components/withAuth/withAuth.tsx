@@ -18,14 +18,23 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) =>
 
     if (isLoading) {
       return (
-        <div className="min-h-screen bg-gradient-to-br from-brown-900 via-brown-800 to-brown-900 flex items-center justify-center">
-          <div className="text-white text-lg">Loading...</div>
+        <div className="min-h-screen bg-gradient-to-br from-brown-900 via-brown-800 to-brown-900 flex items-center justify-center p-4">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-400 mx-auto mb-4"></div>
+            <div className="text-white text-lg">Loading...</div>
+          </div>
         </div>
       )
     }
 
     if (!isAuthenticated) {
-      return null
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-brown-900 via-brown-800 to-brown-900 flex items-center justify-center p-4">
+          <div className="text-center">
+            <div className="text-white text-lg">Redirecting to login...</div>
+          </div>
+        </div>
+      )
     }
 
     return <WrappedComponent {...props} />
