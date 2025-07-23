@@ -24,8 +24,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // Ensure Clerk has a publishable key during build
+  const clerkPublishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+  
+  if (!clerkPublishableKey && process.env.NODE_ENV !== 'development') {
+    console.warn('Missing NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY environment variable')
+  }
+
   return (
-    <ClerkProvider>
+    <ClerkProvider publishableKey={clerkPublishableKey}>
       <html lang="en">
         <body className={`${inter.variable} ${playfair.variable} font-body`}>
           <AuthProvider>
