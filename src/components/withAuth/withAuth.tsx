@@ -8,16 +8,23 @@ import { useAuth } from '@/context/AuthContext'
 const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
   const Wrapper = (props: P) => {
     const router = useRouter()
-    const { isAuthenticated } = useAuth()
+    const { isAuthenticated, isLoading } = useAuth()
 
     useEffect(() => {
-      if (!isAuthenticated) {
-        router.replace('/login')
+      if (!isLoading && !isAuthenticated) {
+        router.push('/login')
       }
-    }, [isAuthenticated, router])
+    }, [isAuthenticated, isLoading, router])
+
+    if (isLoading) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-brown-900 via-brown-800 to-brown-900 flex items-center justify-center">
+          <div className="text-white text-lg">Loading...</div>
+        </div>
+      )
+    }
 
     if (!isAuthenticated) {
-      // You can return a loader or null here
       return null
     }
 

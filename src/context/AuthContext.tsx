@@ -13,6 +13,7 @@ interface AuthContextType {
   login: (userData: User) => void
   logout: () => void
   updateUser: (userData: User) => void
+  isLoading: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -34,6 +35,7 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const userData = localStorage.getItem('userData')
@@ -43,8 +45,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setIsAuthenticated(true)
       } catch (error) {
         console.error('Error parsing user data:', error)
+        // Clear invalid data
+        localStorage.removeItem('userData')
       }
     }
+    setIsLoading(false)
   }, [])
 
   const login = (userData: User) => {
@@ -73,6 +78,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     login,
     logout,
     updateUser,
+    isLoading,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

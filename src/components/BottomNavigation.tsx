@@ -1,12 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import { useCart } from './CartProvider'
 
 export default function BottomNavigation() {
   const pathname = usePathname()
+  const router = useRouter()
   const { isAuthenticated, user, logout } = useAuth()
   const { toggleCart, items } = useCart()
 
@@ -50,8 +51,11 @@ export default function BottomNavigation() {
 
   const handleProfileClick = () => {
     if (isAuthenticated) {
-      // Navigate to profile page instead of logout
-      window.location.href = '/profile'
+      // Navigate to profile page using Next.js router
+      router.push('/profile')
+    } else {
+      // Navigate to login page
+      router.push('/login')
     }
   }
 
