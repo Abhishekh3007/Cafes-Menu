@@ -129,6 +129,37 @@ function ProfilePage() {
     }
   }
 
+  // Get current location for address
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords
+          try {
+            // Use a simple coordinates format since we don't have geocoding API
+            const locationString = `Current Location (${latitude.toFixed(6)}, ${longitude.toFixed(6)})`
+            handleInputChange('address.street', locationString)
+            alert('Location captured! Please complete the address details.')
+          } catch (error) {
+            // Fallback to coordinates
+            const locationString = `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)}`
+            handleInputChange('address.street', locationString)
+          }
+        },
+        (error) => {
+          alert('Unable to get your location. Please enter address manually.')
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 60000
+        }
+      )
+    } else {
+      alert('Geolocation is not supported by this browser.')
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-brown-900 via-brown-800 to-brown-900 py-8">
       <div className="max-w-4xl mx-auto px-4">
@@ -226,6 +257,17 @@ function ProfilePage() {
             {/* Address Information */}
             <div className="bg-brown-800 bg-opacity-30 backdrop-blur-sm rounded-2xl p-6 border border-amber-300 border-opacity-20">
               <h2 className="text-2xl font-display font-bold text-white mb-6">Delivery Address</h2>
+              
+              {isEditing && (
+                <div className="flex gap-4 mb-6">
+                  <button
+                    onClick={getCurrentLocation}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors text-sm flex items-center gap-2"
+                  >
+                    📍 Use Current Location
+                  </button>
+                </div>
+              )}
               
               <div className="grid md:grid-cols-2 gap-4">
                 <div>

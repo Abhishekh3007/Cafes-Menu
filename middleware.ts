@@ -1,42 +1,19 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import jwt from 'jsonwebtoken'
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
-// Define protected routes
-const protectedRoutes = ['/admin', '/profile', '/orders']
+// Define routes that require authentication
+const isProtectedRoute = createRouteMatcher([
+  '/admin(.*)',
+  '/profile(.*)',
+  '/orders(.*)',
+  '/dashboard(.*)'
+])
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-
-  // Check if route is protected
-  const isProtectedRoute = protectedRoutes.some(route => 
-    pathname.startsWith(route)
-  )
-
-  if (!isProtectedRoute) {
-    return NextResponse.next()
+export default clerkMiddleware(async (auth, req) => {
+  // Protect routes that require authentication
+  if (isProtectedRoute(req)) {
+    await auth.protect()
   }
-
-  // Get token from cookie
-  const token = request.cookies.get('token')?.value
-
-  if (!token) {
-    // Redirect to login if no token
-    return NextResponse.redirect(new URL('/login', request.url))
-  }
-
-  try {
-    // Verify JWT token
-    jwt.verify(token, process.env.JWT_SECRET!)
-    return NextResponse.next()
-  } catch (error) {
-    // Invalid token, redirect to login
-    const response = NextResponse.redirect(new URL('/login', request.url))
-    // Clear invalid token
-    response.cookies.delete('token')
-    return response
-  }
-}
+})
 
 export const config = {
   matcher: [
@@ -48,6 +25,8 @@ export const config = {
      * - favicon.ico (favicon file)
      * - public folder
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|public).*)',
-  ],
+    '/((?!.*\\..*|_next).*)',
+    '/',
+    '/(api|trpc)(.*)'
+  ]
 }

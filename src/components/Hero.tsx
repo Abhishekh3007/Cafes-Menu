@@ -3,9 +3,12 @@
 import Link from 'next/link'
 import { useAuth } from '@/context/AuthContext'
 import { useCart } from './CartProvider'
+import { SignInButton, SignUpButton, useUser } from '@clerk/nextjs'
+import ClerkUserButton from './ClerkUserButton'
 
 export default function Hero() {
-  const { isAuthenticated, user, logout } = useAuth()
+  const { isAuthenticated, user } = useAuth()
+  const { isSignedIn, isLoaded } = useUser()
   const { toggleCart, items } = useCart()
 
   const itemCount = items.reduce((total, item) => total + item.quantity, 0)
@@ -58,27 +61,25 @@ export default function Hero() {
             </button>
 
             <div className="flex items-center space-x-4">
-              {isAuthenticated ? (
+              {isAuthenticated && isLoaded && isSignedIn ? (
                 <div className="flex items-center space-x-4">
                   <span className="text-amber-300 font-medium">
                     Hi, {user?.name || 'Guest'}!
                   </span>
-                  <button onClick={logout} className="text-white hover:text-amber-300 transition-colors">
-                    Logout
-                  </button>
+                  <ClerkUserButton />
                 </div>
               ) : (
                 <>
-                  <Link href="/login">
+                  <SignInButton mode="modal">
                     <button className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg transition-colors font-medium">
                       Login
                     </button>
-                  </Link>
-                  <Link href="/register">
+                  </SignInButton>
+                  <SignUpButton mode="modal">
                     <button className="bg-brown-700 hover:bg-brown-600 text-white px-6 py-2 rounded-lg transition-colors">
                       Sign Up
                     </button>
-                  </Link>
+                  </SignUpButton>
                 </>
               )}
             </div>
@@ -102,16 +103,14 @@ export default function Hero() {
             </button>
 
             {/* Mobile Auth */}
-            {isAuthenticated ? (
-              <button onClick={logout} className="text-white hover:text-amber-300 transition-colors text-sm">
-                Logout
-              </button>
+            {isAuthenticated && isLoaded && isSignedIn ? (
+              <ClerkUserButton />
             ) : (
-              <Link href="/login">
+              <SignInButton mode="modal">
                 <button className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors text-sm">
                   Login
                 </button>
-              </Link>
+              </SignInButton>
             )}
           </div>
         </div>

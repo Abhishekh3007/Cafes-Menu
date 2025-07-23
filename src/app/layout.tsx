@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter, Playfair_Display } from 'next/font/google'
 import './globals.css'
+import { ClerkProvider } from '@clerk/nextjs'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' })
@@ -24,40 +25,42 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} ${playfair.variable} font-body`}>
-        <AuthProvider>
-          <CartProvider>
-            {children}
-            <Cart />
-            <FloatingCartButton />
-            <BottomNavigation />
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                duration: 4000,
-                style: {
-                  background: '#78350f',
-                  color: '#fbbf24',
-                  border: '1px solid #92400e',
-                },
-                success: {
-                  iconTheme: {
-                    primary: '#10b981',
-                    secondary: '#ffffff',
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${inter.variable} ${playfair.variable} font-body`}>
+          <AuthProvider>
+            <CartProvider>
+              {children}
+              <Cart />
+              <FloatingCartButton />
+              <BottomNavigation />
+              <Toaster
+                position="top-right"
+                toastOptions={{
+                  duration: 4000,
+                  style: {
+                    background: '#78350f',
+                    color: '#fbbf24',
+                    border: '1px solid #92400e',
                   },
-                },
-                error: {
-                  iconTheme: {
-                    primary: '#ef4444',
-                    secondary: '#ffffff',
+                  success: {
+                    iconTheme: {
+                      primary: '#10b981',
+                      secondary: '#ffffff',
+                    },
                   },
-                },
-              }}
-            />
-          </CartProvider>
-        </AuthProvider>
-      </body>
-    </html>
+                  error: {
+                    iconTheme: {
+                      primary: '#ef4444',
+                      secondary: '#ffffff',
+                    },
+                  },
+                }}
+              />
+            </CartProvider>
+          </AuthProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }

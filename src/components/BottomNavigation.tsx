@@ -4,11 +4,14 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import { useCart } from './CartProvider'
+import { useUser, SignInButton } from '@clerk/nextjs'
+import ClerkUserButton from './ClerkUserButton'
 
 export default function BottomNavigation() {
   const pathname = usePathname()
   const router = useRouter()
-  const { isAuthenticated, user, logout } = useAuth()
+  const { isAuthenticated } = useAuth()
+  const { isSignedIn, isLoaded } = useUser()
   const { toggleCart, items } = useCart()
 
   const itemCount = items.reduce((total, item) => total + item.quantity, 0)
@@ -41,21 +44,21 @@ export default function BottomNavigation() {
       activeIcon: '🎫'
     },
     {
-      name: isAuthenticated ? 'Profile' : 'Login',
-      href: isAuthenticated ? '/profile' : '/login',
-      icon: isAuthenticated ? '👤' : '🔐',
-      activeIcon: isAuthenticated ? '👤' : '🔐',
+      name: (isAuthenticated && isLoaded && isSignedIn) ? 'Profile' : 'Login',
+      href: (isAuthenticated && isLoaded && isSignedIn) ? '/profile' : '/login',
+      icon: (isAuthenticated && isLoaded && isSignedIn) ? '👤' : '🔐',
+      activeIcon: (isAuthenticated && isLoaded && isSignedIn) ? '👤' : '🔐',
       isProfile: true
     }
   ]
 
   const handleProfileClick = () => {
-    if (isAuthenticated) {
+    if (isAuthenticated && isLoaded && isSignedIn) {
       // Navigate to profile page using Next.js router
       router.push('/profile')
     } else {
-      // Navigate to login page
-      router.push('/login')
+      // Navigate to login page or trigger sign-in modal
+      router.push('/sign-in')
     }
   }
 

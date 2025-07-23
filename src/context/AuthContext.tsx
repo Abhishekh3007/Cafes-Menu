@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { useUser, useAuth as useClerkAuth } from '@clerk/nextjs'
 import { IUser } from '@/models/User'
 
 interface User extends Partial<IUser> {
@@ -14,6 +15,7 @@ interface AuthContextType {
   logout: () => void
   updateUser: (userData: User) => void
   isLoading: boolean
+  clerkUser: any
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -33,43 +35,52 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const { user: clerkUser, isLoaded } = useUser()
+  const { signOut } = useClerkAuth()
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
+  // Derive authentication state from Clerk
+  const isAuthenticated = !!clerkUser && isLoaded
+
   useEffect(() => {
-    const userData = localStorage.getItem('userData')
-    if (userData) {
-      try {
-        setUser(JSON.parse(userData))
-        setIsAuthenticated(true)
-      } catch (error) {
-        console.error('Error parsing user data:', error)
-        // Clear invalid data
-        localStorage.removeItem('userData')
+    if (isLoaded) {
+      if (clerkUser) {
+        // Convert Clerk user to our user format
+        const userData: User = {
+          id: clerkUser.id,
+          email: clerkUser.emailAddresses[0]?.emailAddress,
+          name: clerkUser.fullName || clerkUser.firstName || '',
+          phone: clerkUser.phoneNumbers[0]?.phoneNumber,
+        }
+        setUser(userData)
+      } else {
+        setUser(null)
       }
+      setIsLoading(false)
     }
-    setIsLoading(false)
-  }, [])
+  }, [clerkUser, isLoaded])
 
   const login = (userData: User) => {
-    localStorage.setItem('userData', JSON.stringify(userData))
+    // For Clerk, login is handled by Clerk components
+    // This function is kept for backward compatibility
     setUser(userData)
-    setIsAuthenticated(true)
   }
 
   const updateUser = (userData: User) => {
-    localStorage.setItem('userData', JSON.stringify(userData))
     setUser(userData)
   }
 
-  const logout = () => {
-    localStorage.removeItem('userData')
-    localStorage.removeItem('sonnas-cart') // Clear cart data on logout
-    setIsAuthenticated(false)
-    setUser(null)
-    // Dispatch custom event to notify cart to clear
-    window.dispatchEvent(new CustomEvent('auth-logout'))
+  const logout = async () => {
+    try {
+      await signOut()
+      localStorage.removeItem('sonnas-cart') // Clear cart data on logout
+      setUser(null)
+      // Dispatch custom event to notify cart to clear
+      window.dispatchEvent(new CustomEvent('auth-logout'))
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
   }
 
   const value = {
@@ -79,6 +90,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     logout,
     updateUser,
     isLoading,
+    clerkUser,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

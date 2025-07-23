@@ -20,7 +20,7 @@ export default function FloatingCartButton() {
   return (
     <button
       onClick={toggleCart}
-      className="hidden md:flex fixed bottom-24 right-6 z-50 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white p-4 rounded-full shadow-2xl hover:shadow-amber-500/25 transition-all duration-300 hover:scale-110 group"
+      className="hidden lg:flex fixed bottom-24 right-6 z-50 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white p-4 rounded-full shadow-2xl hover:shadow-amber-500/25 transition-all duration-300 hover:scale-110 group"
       aria-label={`Shopping cart with ${itemCount} items`}
     >
       <div className="flex items-center space-x-3">
