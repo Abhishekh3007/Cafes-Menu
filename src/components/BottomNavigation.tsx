@@ -12,7 +12,7 @@ export default function BottomNavigation() {
   const router = useRouter()
   const { isAuthenticated } = useAuth()
   const { isSignedIn, isLoaded } = useUser()
-  const { toggleCart, items, closeCart } = useCart()
+  const { toggleFullScreenCart, items, closeCart } = useCart()
 
   const itemCount = items.reduce((total, item) => total + item.quantity, 0)
 
@@ -78,7 +78,7 @@ export default function BottomNavigation() {
             <div key={item.name} className="relative">
               {item.isCart ? (
                 <button
-                  onClick={toggleCart}
+                  onClick={toggleFullScreenCart}
                   className={`w-full h-full flex flex-col items-center justify-center transition-all duration-200 ${
                     isActive 
                       ? 'text-secondary-400 bg-primary-500' 

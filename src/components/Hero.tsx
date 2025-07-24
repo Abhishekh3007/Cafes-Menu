@@ -9,7 +9,7 @@ import ClerkUserButton from './ClerkUserButton'
 export default function Hero() {
   const { isAuthenticated, user } = useAuth()
   const { isSignedIn, isLoaded } = useUser()
-  const { toggleCart, items, closeCart } = useCart()
+  const { toggleFullScreenCart, items, closeCart } = useCart()
 
   const itemCount = items.reduce((total, item) => total + item.quantity, 0)
 
@@ -46,7 +46,7 @@ export default function Hero() {
             
             {/* Cart Button - Always visible and prominent */}
             <button 
-              onClick={toggleCart} 
+              onClick={toggleFullScreenCart} 
               className="relative bg-accent-400 hover:bg-accent-500 text-white px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-accent-400/25"
             >
               <div className="flex items-center space-x-2">
@@ -95,7 +95,7 @@ export default function Hero() {
           <div className="md:hidden flex items-center space-x-2">
             {/* Mobile Cart Button */}
             <button 
-              onClick={toggleCart} 
+              onClick={toggleFullScreenCart} 
               className="relative bg-accent-400 hover:bg-accent-500 text-white px-3 py-2 rounded-lg transition-all duration-300"
             >
               <div className="flex items-center space-x-1">

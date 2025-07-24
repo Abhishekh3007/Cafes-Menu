@@ -15,6 +15,8 @@ export const metadata: Metadata = {
 import { AuthProvider } from '@/context/AuthContext'
 import { CartProvider } from '@/components/CartProvider'
 import Cart from '@/components/Cart'
+import FullScreenCart from '@/components/FullScreenCart'
+import CartToast from '@/components/CartToast'
 import FloatingCartButton from '@/components/FloatingCartButton'
 import BottomNavigation from '@/components/BottomNavigation'
 import { Toaster } from 'react-hot-toast'
@@ -39,6 +41,8 @@ export default function RootLayout({
             <CartProvider>
               {children}
               <Cart />
+              <FullScreenCart />
+              <CartToast />
               <FloatingCartButton />
               <BottomNavigation />
               <Toaster

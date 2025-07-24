@@ -376,7 +376,7 @@ function MenuContent() {
   const searchParams = useSearchParams()
   const categoryFromUrl = searchParams.get('category')
   const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl || 'All')
-  const { items, isOpen, total, addToCart, removeFromCart, updateQuantity, clearCart, toggleCart } = useCart()
+  const { items, isOpen, total, addToCart, removeFromCart, updateQuantity, clearCart, toggleFullScreenCart } = useCart()
   const { isAuthenticated, user } = useAuth()
 
   // Update selected category when URL changes
@@ -556,7 +556,7 @@ function MenuContent() {
         {items.length > 0 && (
           <div className="fixed bottom-4 right-4 z-40">
             <button
-              onClick={toggleCart}
+              onClick={toggleFullScreenCart}
               className="bg-accent-400 hover:bg-accent-500 text-white p-4 rounded-full shadow-lg transition-all hover:scale-105"
             >
               <div className="relative">

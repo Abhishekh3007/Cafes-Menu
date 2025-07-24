@@ -13,13 +13,19 @@ interface CartItem {
 interface CartState {
   items: CartItem[]
   isOpen: boolean
+  isFullScreenOpen: boolean
   total: number
+  showToast: boolean
+  toastMessage: string
   addToCart: (item: { id: number; name: string; price: number; image: string }) => void
   removeFromCart: (id: number) => void
   updateQuantity: (id: number, quantity: number) => void
   toggleCart: () => void
+  toggleFullScreenCart: () => void
   clearCart: () => void
   closeCart: () => void
+  closeFullScreenCart: () => void
+  hideToast: () => void
 }
 
 const CartContext = createContext<CartState | undefined>(undefined);
@@ -27,7 +33,10 @@ const CartContext = createContext<CartState | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isFullScreenOpen, setIsFullScreenOpen] = useState(false);
   const [total, setTotal] = useState(0);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -45,7 +54,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const handleLogout = () => {
       setItems([]);
       setIsOpen(false);
+      setIsFullScreenOpen(false);
       setTotal(0);
+      setShowToast(false);
     };
 
     window.addEventListener('auth-logout', handleLogout);
@@ -81,7 +92,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
         return [...prevItems, { ...item, quantity: 1 }]
       }
     })
-    setIsOpen(true);
+    
+    // Show toast notification instead of opening cart
+    setToastMessage(`${item.name} added to cart!`)
+    setShowToast(true)
+    
+    // Auto-hide toast after 4 seconds
+    setTimeout(() => {
+      setShowToast(false)
+    }, 4000)
   }
 
   const removeFromCart = (id: number) => {
@@ -105,8 +124,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setIsOpen(prev => !prev)
   }
 
+  const toggleFullScreenCart = () => {
+    setIsFullScreenOpen(prev => !prev)
+    // Close sidebar cart when opening full screen
+    if (!isFullScreenOpen) {
+      setIsOpen(false)
+    }
+  }
+
   const closeCart = () => {
     setIsOpen(false)
+  }
+
+  const closeFullScreenCart = () => {
+    setIsFullScreenOpen(false)
+  }
+
+  const hideToast = () => {
+    setShowToast(false)
   }
 
   const clearCart = () => {
@@ -117,13 +152,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
     <CartContext.Provider value={{ 
       items, 
       isOpen, 
+      isFullScreenOpen,
       total, 
+      showToast,
+      toastMessage,
       addToCart, 
       removeFromCart, 
       updateQuantity,
       toggleCart,
+      toggleFullScreenCart,
       closeCart,
-      clearCart
+      closeFullScreenCart,
+      clearCart,
+      hideToast
     }}>
       {children}
     </CartContext.Provider>
