@@ -4,461 +4,181 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
 import withAuth from '@/components/withAuth/withAuth'
+import BottomNavigation from '@/components/BottomNavigation'
 
 interface UserProfile {
   name: string
   email: string
   mobile: string
-  dateOfBirth: string
-  gender: string
-  address: {
-    fullName: string
-    street: string
-    city: string
-    state: string
-    zipCode: string
-    landmark: string
-    addressType: string
-  }
+  loyaltyPoints: number
+  membershipTier: string
+  favoriteItems: number
+  availableRewards: number
 }
 
 function ProfilePage() {
   const { user, isAuthenticated } = useAuth()
   const router = useRouter()
-  const [isEditing, setIsEditing] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const [profile, setProfile] = useState<UserProfile>({
     name: '',
     email: '',
     mobile: '',
-    dateOfBirth: '',
-    gender: '',
-    address: {
-      fullName: '',
-      street: '',
-      city: '',
-      state: '',
-      zipCode: '',
-      landmark: '',
-      addressType: 'home'
-    }
+    loyaltyPoints: 1250,
+    membershipTier: 'Gold Member',
+    favoriteItems: 5,
+    availableRewards: 2
   })
-  const [orders, setOrders] = useState([])
-  const [loyaltyPoints, setLoyaltyPoints] = useState(0)
 
   useEffect(() => {
     if (user) {
       setProfile({
-        name: user.name || '',
+        name: user.name || 'User',
         email: user.email || '',
-        mobile: user.mobile || '',
-        dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : '',
-        gender: user.gender || '',
-        address: {
-          fullName: user.address?.fullName || '',
-          street: user.address?.street || '',
-          city: user.address?.city || '',
-          state: user.address?.state || '',
-          zipCode: user.address?.zipCode || '',
-          landmark: user.address?.landmark || '',
-          addressType: user.address?.addressType || 'home'
-        }
+        mobile: user.mobile || '+91 98765 43210',
+        loyaltyPoints: user.loyaltyPoints || 1250,
+        membershipTier: 'Gold Member',
+        favoriteItems: 5,
+        availableRewards: 2
       })
-      setLoyaltyPoints(user.loyaltyPoints || 0)
-      fetchUserOrders()
     }
   }, [user])
 
-  const fetchUserOrders = async () => {
-    try {
-      const token = localStorage.getItem('token')
-      const response = await fetch('/api/orders', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-      if (response.ok) {
-        const data = await response.json()
-        setOrders(data.data || [])
-      }
-    } catch (error) {
-      console.error('Error fetching orders:', error)
-    }
-  }
-
-  const handleInputChange = (field: string, value: string) => {
-    if (field.includes('address.')) {
-      const addressField = field.replace('address.', '')
-      setProfile(prev => ({
-        ...prev,
-        address: {
-          ...prev.address,
-          [addressField]: value
-        }
-      }))
-    } else {
-      setProfile(prev => ({
-        ...prev,
-        [field]: value
-      }))
-    }
-  }
-
-  const handleSaveProfile = async () => {
-    setIsLoading(true)
-    try {
-      const token = localStorage.getItem('token')
-      const response = await fetch('/api/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(profile)
-      })
-
-      if (response.ok) {
-        setIsEditing(false)
-        // Refresh user data
-        window.location.reload()
-      }
-    } catch (error) {
-      console.error('Error updating profile:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // Get current location for address
-  const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords
-          try {
-            // Use a simple coordinates format since we don't have geocoding API
-            const locationString = `Current Location (${latitude.toFixed(6)}, ${longitude.toFixed(6)})`
-            handleInputChange('address.street', locationString)
-            alert('Location captured! Please complete the address details.')
-          } catch (error) {
-            // Fallback to coordinates
-            const locationString = `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)}`
-            handleInputChange('address.street', locationString)
-          }
-        },
-        (error) => {
-          alert('Unable to get your location. Please enter address manually.')
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 60000
-        }
-      )
-    } else {
-      alert('Geolocation is not supported by this browser.')
-    }
-  }
+  const loyaltyProgress = (profile.loyaltyPoints / 2000) * 100
+  const pointsToNextTier = 2000 - profile.loyaltyPoints
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brown-900 via-brown-800 to-brown-900 py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-display font-bold text-white mb-2">My Profile</h1>
-          <p className="text-brown-200">Manage your account information and preferences</p>
+    <div className="min-h-screen bg-gray-50 pb-20">
+      {/* Header */}
+      <div className="bg-white px-4 py-3 flex items-center justify-between shadow-sm">
+        <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
+          <span className="text-white font-bold text-lg">S</span>
         </div>
-
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Profile Information */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Basic Information */}
-            <div className="bg-brown-800 bg-opacity-30 backdrop-blur-sm rounded-2xl p-6 border border-amber-300 border-opacity-20">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-display font-bold text-white">Basic Information</h2>
-                <button
-                  onClick={() => setIsEditing(!isEditing)}
-                  className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors"
-                >
-                  {isEditing ? 'Cancel' : 'Edit'}
-                </button>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-brown-200 text-sm font-medium mb-2">Full Name</label>
-                  <input
-                    type="text"
-                    value={profile.name}
-                    onChange={(e) => handleInputChange('name', e.target.value)}
-                    disabled={!isEditing}
-                    className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400 disabled:opacity-50"
-                  />
-                </div>
-                <div>
-                  <label className="block text-brown-200 text-sm font-medium mb-2">Email</label>
-                  <input
-                    type="email"
-                    value={profile.email}
-                    onChange={(e) => handleInputChange('email', e.target.value)}
-                    disabled={!isEditing}
-                    className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400 disabled:opacity-50"
-                  />
-                </div>
-                <div>
-                  <label className="block text-brown-200 text-sm font-medium mb-2">Mobile Number</label>
-                  <input
-                    type="tel"
-                    value={profile.mobile}
-                    disabled
-                    className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400 disabled:opacity-50"
-                  />
-                  <p className="text-xs text-brown-300 mt-1">Mobile number cannot be changed</p>
-                </div>
-                <div>
-                  <label className="block text-brown-200 text-sm font-medium mb-2">Date of Birth</label>
-                  <input
-                    type="date"
-                    value={profile.dateOfBirth}
-                    onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
-                    disabled={!isEditing}
-                    className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400 disabled:opacity-50"
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-brown-200 text-sm font-medium mb-2">Gender</label>
-                  <select
-                    value={profile.gender}
-                    onChange={(e) => handleInputChange('gender', e.target.value)}
-                    disabled={!isEditing}
-                    className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400 disabled:opacity-50"
-                  >
-                    <option value="">Select Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-              </div>
-
-              {isEditing && (
-                <div className="mt-6 flex gap-4">
-                  <button
-                    onClick={handleSaveProfile}
-                    disabled={isLoading}
-                    className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors disabled:opacity-50"
-                  >
-                    {isLoading ? 'Saving...' : 'Save Changes'}
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Address Information */}
-            <div className="bg-brown-800 bg-opacity-30 backdrop-blur-sm rounded-2xl p-6 border border-amber-300 border-opacity-20">
-              <h2 className="text-2xl font-display font-bold text-white mb-6">Delivery Address</h2>
-              
-              {isEditing && (
-                <div className="flex gap-4 mb-6">
-                  <button
-                    onClick={getCurrentLocation}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors text-sm flex items-center gap-2"
-                  >
-                    📍 Use Current Location
-                  </button>
-                </div>
-              )}
-              
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-brown-200 text-sm font-medium mb-2">Full Name</label>
-                  <input
-                    type="text"
-                    value={profile.address.fullName}
-                    onChange={(e) => handleInputChange('address.fullName', e.target.value)}
-                    disabled={!isEditing}
-                    className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400 disabled:opacity-50"
-                  />
-                </div>
-                <div>
-                  <label className="block text-brown-200 text-sm font-medium mb-2">Address Type</label>
-                  <select
-                    value={profile.address.addressType}
-                    onChange={(e) => handleInputChange('address.addressType', e.target.value)}
-                    disabled={!isEditing}
-                    className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400 disabled:opacity-50"
-                  >
-                    <option value="home">Home</option>
-                    <option value="work">Work</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-brown-200 text-sm font-medium mb-2">Street Address</label>
-                  <textarea
-                    value={profile.address.street}
-                    onChange={(e) => handleInputChange('address.street', e.target.value)}
-                    disabled={!isEditing}
-                    rows={3}
-                    className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400 disabled:opacity-50"
-                  />
-                </div>
-                <div>
-                  <label className="block text-brown-200 text-sm font-medium mb-2">City</label>
-                  <input
-                    type="text"
-                    value={profile.address.city}
-                    onChange={(e) => handleInputChange('address.city', e.target.value)}
-                    disabled={!isEditing}
-                    className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400 disabled:opacity-50"
-                  />
-                </div>
-                <div>
-                  <label className="block text-brown-200 text-sm font-medium mb-2">State</label>
-                  <input
-                    type="text"
-                    value={profile.address.state}
-                    onChange={(e) => handleInputChange('address.state', e.target.value)}
-                    disabled={!isEditing}
-                    className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400 disabled:opacity-50"
-                  />
-                </div>
-                <div>
-                  <label className="block text-brown-200 text-sm font-medium mb-2">ZIP Code</label>
-                  <input
-                    type="text"
-                    value={profile.address.zipCode}
-                    onChange={(e) => handleInputChange('address.zipCode', e.target.value)}
-                    disabled={!isEditing}
-                    className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400 disabled:opacity-50"
-                  />
-                </div>
-                <div>
-                  <label className="block text-brown-200 text-sm font-medium mb-2">Landmark (Optional)</label>
-                  <input
-                    type="text"
-                    value={profile.address.landmark}
-                    onChange={(e) => handleInputChange('address.landmark', e.target.value)}
-                    disabled={!isEditing}
-                    className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400 disabled:opacity-50"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Order History */}
-            <div className="bg-brown-800 bg-opacity-30 backdrop-blur-sm rounded-2xl p-6 border border-amber-300 border-opacity-20">
-              <h2 className="text-2xl font-display font-bold text-white mb-6">Order History</h2>
-              
-              {orders.length > 0 ? (
-                <div className="space-y-4">
-                  {orders.slice(0, 5).map((order: any) => (
-                    <div key={order._id} className="bg-brown-700 bg-opacity-50 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-white font-medium">Order #{order.orderId}</span>
-                        <span className="text-amber-300 font-bold">Rs {order.total}</span>
-                      </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-brown-200">
-                          {new Date(order.createdAt).toLocaleDateString()}
-                        </span>
-                        <span className={`px-2 py-1 rounded-full text-xs ${
-                          order.status === 'delivered' ? 'bg-green-600 text-white' :
-                          order.status === 'confirmed' ? 'bg-blue-600 text-white' :
-                          order.status === 'preparing' ? 'bg-yellow-600 text-white' :
-                          'bg-gray-600 text-white'
-                        }`}>
-                          {order.status}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                  {orders.length > 5 && (
-                    <button className="w-full text-amber-300 hover:text-amber-400 font-medium">
-                      View All Orders ({orders.length})
-                    </button>
-                  )}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <span className="text-6xl mb-4 block">🍽️</span>
-                  <p className="text-brown-200">No orders yet</p>
-                  <button
-                    onClick={() => router.push('/menu')}
-                    className="mt-4 bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg transition-colors"
-                  >
-                    Browse Menu
-                  </button>
-                </div>
-              )}
-            </div>
+        
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-1 bg-orange-100 px-3 py-1 rounded-full">
+            <svg className="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+            <span className="text-orange-600 font-medium">{profile.loyaltyPoints.toLocaleString()}</span>
           </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Loyalty Points */}
-            <div className="bg-gradient-to-br from-amber-600 to-amber-700 rounded-2xl p-6 text-white">
-              <div className="text-center">
-                <span className="text-4xl mb-2 block">🏆</span>
-                <h3 className="text-xl font-bold mb-2">Loyalty Points</h3>
-                <div className="text-3xl font-display font-bold mb-1">{loyaltyPoints}</div>
-                <p className="text-amber-100 text-sm">Points earned</p>
-                <div className="mt-4 text-xs text-amber-100">
-                  Earn 1 point for every Rs 10 spent
-                </div>
-              </div>
-            </div>
-
-            {/* Account Stats */}
-            <div className="bg-brown-800 bg-opacity-30 backdrop-blur-sm rounded-2xl p-6 border border-amber-300 border-opacity-20">
-              <h3 className="text-xl font-display font-bold text-white mb-4">Account Stats</h3>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-brown-200">Total Orders</span>
-                  <span className="text-white font-bold">{user?.totalOrders || 0}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-brown-200">Member Since</span>
-                  <span className="text-white font-bold">
-                    {user?.createdAt ? new Date(user.createdAt).getFullYear() : '-'}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-brown-200">Verification Status</span>
-                  <span className={`font-bold ${user?.isVerified ? 'text-green-400' : 'text-yellow-400'}`}>
-                    {user?.isVerified ? 'Verified' : 'Pending'}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="bg-brown-800 bg-opacity-30 backdrop-blur-sm rounded-2xl p-6 border border-amber-300 border-opacity-20">
-              <h3 className="text-xl font-display font-bold text-white mb-4">Quick Actions</h3>
-              <div className="space-y-3">
-                <button
-                  onClick={() => router.push('/menu')}
-                  className="w-full bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-lg transition-colors"
-                >
-                  Browse Menu
-                </button>
-                <button
-                  onClick={() => router.push('/reserve')}
-                  className="w-full bg-brown-600 hover:bg-brown-700 text-white py-2 rounded-lg transition-colors"
-                >
-                  Reserve Table
-                </button>
-                <button
-                  onClick={() => router.push('/contact')}
-                  className="w-full bg-brown-600 hover:bg-brown-700 text-white py-2 rounded-lg transition-colors"
-                >
-                  Contact Support
-                </button>
-              </div>
-            </div>
+          
+          <div className="flex items-center space-x-3">
+            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m-2.4-2l2 10m0 0h12m-8 4a2 2 0 100 4 2 2 0 000-4zm8 0a2 2 0 100 4 2 2 0 000-4z" />
+            </svg>
           </div>
         </div>
       </div>
+
+      <div className="px-4 py-6 space-y-6">
+        {/* Welcome Section */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm">
+          <div className="flex items-center space-x-4">
+            <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center">
+              <span className="text-white font-bold text-2xl">U</span>
+            </div>
+            <div className="flex-1">
+              <h1 className="text-xl font-bold text-gray-800">Welcome back!</h1>
+              <p className="text-gray-600">{profile.mobile}</p>
+              <div className="flex items-center space-x-4 mt-2">
+                <div className="flex items-center space-x-1">
+                  <svg className="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  <span className="text-gray-700 font-medium">{profile.loyaltyPoints.toLocaleString()} loyalty points</span>
+                </div>
+                <span className="text-orange-600 font-medium">{profile.membershipTier}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Favorites and Rewards Cards */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-white rounded-2xl p-6 shadow-sm text-center">
+            <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <svg className="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </div>
+            <h3 className="font-semibold text-gray-800">Favorites</h3>
+            <p className="text-gray-500 text-sm">{profile.favoriteItems} saved items</p>
+          </div>
+          
+          <div className="bg-white rounded-2xl p-6 shadow-sm text-center">
+            <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <svg className="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+              </svg>
+            </div>
+            <h3 className="font-semibold text-gray-800">Rewards</h3>
+            <p className="text-gray-500 text-sm">{profile.availableRewards} available</p>
+          </div>
+        </div>
+
+        {/* Loyalty Program */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm">
+          <div className="flex items-center space-x-2 mb-4">
+            <svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+            <h3 className="text-lg font-bold text-gray-800">Loyalty Program</h3>
+          </div>
+          <p className="text-gray-600 text-sm mb-4">Earn points with every order and unlock rewards</p>
+          
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-700 font-medium">Progress to Platinum</span>
+              <span className="text-gray-600 text-sm">{profile.loyaltyPoints.toLocaleString()} / 2,000 points</span>
+            </div>
+            
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${loyaltyProgress}%` }}
+              ></div>
+            </div>
+            
+            <p className="text-gray-500 text-sm">
+              {pointsToNextTier} more points to unlock Platinum benefits
+            </p>
+          </div>
+        </div>
+
+        {/* Menu Items */}
+        <div className="space-y-1">
+          <button 
+            onClick={() => router.push('/contact')}
+            className="w-full bg-white rounded-xl p-4 flex items-center space-x-4 shadow-sm hover:bg-gray-50 transition-colors"
+          >
+            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+            </svg>
+            <span className="text-gray-800 font-medium">Contact Support</span>
+          </button>
+          
+          <button className="w-full bg-white rounded-xl p-4 flex items-center space-x-4 shadow-sm hover:bg-gray-50 transition-colors">
+            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span className="text-gray-800 font-medium">Delivery Addresses</span>
+          </button>
+          
+          <button className="w-full bg-white rounded-xl p-4 flex items-center space-x-4 shadow-sm hover:bg-gray-50 transition-colors">
+            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span className="text-gray-800 font-medium">Settings & Privacy</span>
+          </button>
+        </div>
+      </div>
+
+      <BottomNavigation />
     </div>
   )
 }
