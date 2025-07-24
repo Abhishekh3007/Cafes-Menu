@@ -1,32 +1,58 @@
 import { NextRequest, NextResponse } from 'next/server'
-import jwt from 'jsonwebtoken'
-import dbConnect from '@/lib/mongodb'
+import { auth } from '@clerk/nextjs'
+import { connectToDatabase } from '@/lib/mongodb'
 import User from '@/models/User'
 
 export async function GET(request: NextRequest) {
   try {
-    await dbConnect()
+    const { userId } = auth()
     
-    const authHeader = request.headers.get('authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Authorization token required' }, { status: 401 })
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
     }
 
-    const token = authHeader.substring(7)
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any
+    await connectToDatabase()
+
+    // Find or create user profile
+    let user = await User.findOne({ clerkId: userId })
     
-    const user = await User.findById(decoded.userId).select('-password')
     if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+      // Create new user profile with basic info
+      user = new User({
+        clerkId: userId,
+        email: '',
+        name: 'User',
+        phone: '',
+        loyaltyPoints: 0,
+        totalOrders: 0,
+        joinedDate: new Date()
+      })
+      
+      await user.save()
+    }
+
+    const profile = {
+      _id: user._id,
+      clerkId: user.clerkId,
+      email: user.email,
+      name: user.name,
+      phone: user.phone,
+      loyaltyPoints: user.loyaltyPoints || 0,
+      totalOrders: user.totalOrders || 0,
+      joinedDate: user.joinedDate,
+      membershipTier: getTierFromPoints(user.loyaltyPoints || 0)
     }
 
     return NextResponse.json({
       success: true,
-      data: user
+      profile
     })
 
   } catch (error) {
-    console.error('Profile fetch error:', error)
+    console.error('Profile API error:', error)
     return NextResponse.json(
       { error: 'Failed to fetch profile' },
       { status: 500 }

@@ -2,49 +2,154 @@
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/context/AuthContext'
+import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import withAuth from '@/components/withAuth/withAuth'
 import BottomNavigation from '@/components/BottomNavigation'
+import { ArrowLeft, User, Heart, Gift, Phone, MapPin, Settings, ChevronRight, Package, Clock, CheckCircle, Truck } from 'lucide-react'
+import Link from 'next/link'
 
 interface UserProfile {
-  name: string
+  _id: string
+  clerkId: string
   email: string
-  mobile: string
+  name: string
+  phone?: string
   loyaltyPoints: number
+  totalOrders: number
+  joinedDate: string
   membershipTier: string
-  favoriteItems: number
-  availableRewards: number
+}
+
+interface Order {
+  _id: string
+  orderNumber: string
+  items: Array<{
+    name: string
+    quantity: number
+    price: number
+  }>
+  totalAmount: number
+  status: 'pending' | 'confirmed' | 'preparing' | 'out_for_delivery' | 'delivered' | 'cancelled'
+  orderDate: string
+  deliveryDate?: string
+  paymentStatus: 'pending' | 'completed' | 'failed'
+  deliveryAddress?: string
 }
 
 function ProfilePage() {
   const { user, isAuthenticated } = useAuth()
+  const { user: clerkUser } = useUser()
   const router = useRouter()
-  const [profile, setProfile] = useState<UserProfile>({
-    name: '',
-    email: '',
-    mobile: '',
-    loyaltyPoints: 1250,
-    membershipTier: 'Gold Member',
-    favoriteItems: 5,
-    availableRewards: 2
-  })
+  const [profile, setProfile] = useState<UserProfile | null>(null)
+  const [orders, setOrders] = useState<Order[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  // Fetch user profile data
+  const fetchProfile = async () => {
+    try {
+      const response = await fetch('/api/profile')
+      if (!response.ok) throw new Error('Failed to fetch profile')
+      const data = await response.json()
+      setProfile(data.profile)
+    } catch (err) {
+      setError('Failed to load profile data')
+      console.error('Profile fetch error:', err)
+    }
+  }
+
+  // Fetch user orders
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch('/api/orders')
+      if (!response.ok) throw new Error('Failed to fetch orders')
+      const data = await response.json()
+      setOrders(data.orders || [])
+    } catch (err) {
+      console.error('Orders fetch error:', err)
+    }
+  }
 
   useEffect(() => {
-    if (user) {
-      setProfile({
-        name: user.name || 'User',
-        email: user.email || '',
-        mobile: user.mobile || '+91 98765 43210',
-        loyaltyPoints: user.loyaltyPoints || 1250,
-        membershipTier: 'Gold Member',
-        favoriteItems: 5,
-        availableRewards: 2
-      })
+    const loadUserData = async () => {
+      if (isAuthenticated && clerkUser) {
+        setLoading(true)
+        await Promise.all([fetchProfile(), fetchOrders()])
+        setLoading(false)
+      }
     }
-  }, [user])
+    
+    loadUserData()
+  }, [isAuthenticated, clerkUser])
 
-  const loyaltyProgress = (profile.loyaltyPoints / 2000) * 100
-  const pointsToNextTier = 2000 - profile.loyaltyPoints
+  const getStatusIcon = (status: Order['status']) => {
+    switch (status) {
+      case 'pending': return <Clock className="w-4 h-4 text-yellow-600" />
+      case 'confirmed': return <CheckCircle className="w-4 h-4 text-blue-600" />
+      case 'preparing': return <Package className="w-4 h-4 text-orange-600" />
+      case 'out_for_delivery': return <Truck className="w-4 h-4 text-purple-600" />
+      case 'delivered': return <CheckCircle className="w-4 h-4 text-green-600" />
+      case 'cancelled': return <div className="w-4 h-4 bg-red-600 rounded-full" />
+      default: return <Clock className="w-4 h-4 text-gray-600" />
+    }
+  }
+
+  const getStatusText = (status: Order['status']) => {
+    switch (status) {
+      case 'pending': return 'Order Pending'
+      case 'confirmed': return 'Order Confirmed'
+      case 'preparing': return 'Being Prepared'
+      case 'out_for_delivery': return 'Out for Delivery'
+      case 'delivered': return 'Delivered'
+      case 'cancelled': return 'Cancelled'
+      default: return 'Unknown Status'
+    }
+  }
+
+  const getTierFromPoints = (points: number) => {
+    if (points >= 5000) return 'Platinum Member'
+    if (points >= 2000) return 'Gold Member'
+    if (points >= 500) return 'Silver Member'
+    return 'Bronze Member'
+  }
+
+  const getNextTierPoints = (points: number) => {
+    if (points < 500) return 500 - points
+    if (points < 2000) return 2000 - points
+    if (points < 5000) return 5000 - points
+    return 0
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-vibrant-coral mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your profile...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error || !profile) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error || 'Profile not found'}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="bg-vibrant-coral text-white px-4 py-2 rounded-lg"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  const loyaltyProgress = profile.loyaltyPoints >= 5000 ? 100 : (profile.loyaltyPoints / 5000) * 100
+  const pointsToNextTier = getNextTierPoints(profile.loyaltyPoints)
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">

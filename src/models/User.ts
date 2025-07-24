@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose'
 
 export interface IUser extends Document {
+  clerkId?: string
   name: string
   email?: string
   mobile: string
@@ -24,11 +25,17 @@ export interface IUser extends Document {
   verificationMethod: 'otp' | 'password'
   profileComplete: boolean
   lastLogin?: Date
+  joinedDate?: Date
   createdAt: Date
   updatedAt: Date
 }
 
 const UserSchema = new Schema<IUser>({
+  clerkId: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
   name: {
     type: String,
     required: [true, 'Please provide a name'],
@@ -41,8 +48,6 @@ const UserSchema = new Schema<IUser>({
   },
   mobile: {
     type: String,
-    required: [true, 'Please provide a mobile number'],
-    unique: true,
     trim: true,
   },
   password: {
@@ -103,6 +108,10 @@ const UserSchema = new Schema<IUser>({
   },
   lastLogin: {
     type: Date,
+  },
+  joinedDate: {
+    type: Date,
+    default: Date.now,
   },
 }, {
   timestamps: true,
