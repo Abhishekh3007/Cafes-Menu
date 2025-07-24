@@ -216,18 +216,38 @@ export const enhancedMenuItems: MenuItem[] = [
     image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Desserts',
     rating: 4.9,
-    preparationTime: '2-3 mins',
+    preparationTime: '2-3 hours',
     bestseller: true,
     sweetnessLevel: 4, // Very sweet dessert
     sizes: [
-      { size: 'Single Slice', price: 180 },
-      { size: 'Double Slice', price: 320, originalPrice: 360, discount: 40 }
+      { size: '½kg', price: 675, originalPrice: 1250, discount: 575 },
+      { size: '1kg', price: 1250, originalPrice: 1350, discount: 100 }
     ],
     addOns: [
-      { id: 'ice-cream', name: 'Vanilla Ice Cream', price: 60 },
-      { id: 'chocolate-sauce', name: 'Extra Chocolate Sauce', price: 30 },
-      { id: 'whipped-cream', name: 'Whipped Cream', price: 40 },
-      { id: 'berries', name: 'Fresh Berries', price: 80 }
+      { id: 'custom-message', name: 'Custom Message', price: 75 },
+      { id: 'extra-chocolate', name: 'Extra Chocolate Shavings', price: 100 },
+      { id: '1kg-size', name: '1kg Size', price: 575 }
+    ]
+  },
+  {
+    id: 12,
+    name: 'Premium Chocolate Dessert',
+    description: 'Luxury chocolate dessert with premium ingredients',
+    price: 675,
+    image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+    category: 'Desserts',
+    rating: 4.8,
+    preparationTime: '2-3 hours',
+    bestseller: true,
+    sweetnessLevel: 5,
+    sizes: [
+      { size: '½kg', price: 675, originalPrice: 1250, discount: 575 },
+      { size: '1kg', price: 1250, originalPrice: 1350, discount: 100 }
+    ],
+    addOns: [
+      { id: 'custom-message', name: 'Custom Message', price: 75 },
+      { id: 'extra-chocolate', name: 'Extra Chocolate Shavings', price: 100 },
+      { id: '1kg-size', name: '1kg Size', price: 575 }
     ]
   }
 ]
