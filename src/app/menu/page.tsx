@@ -391,9 +391,9 @@ function MenuContent() {
     : menuItems.filter(item => item.category === selectedCategory)
 
   return (
-    <div className="min-h-screen bg-brown-900">
+    <div className="min-h-screen bg-gradient-to-br from-primary-500 via-primary-600 to-secondary-400">
       {/* Header */}
-      <div className="bg-brown-800 py-8">
+      <div className="bg-primary-600 py-8">
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           <nav className="flex items-center space-x-4 text-brown-200 mb-6">
             <Link href="/" className="hover:text-amber-300">Home</Link>
@@ -434,7 +434,7 @@ function MenuContent() {
           {filteredItems.map((item) => (
             <div 
               key={item.id}
-              className="bg-brown-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-brown-700"
+              className="bg-primary-500 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-primary-400"
             >
               <div className="relative h-48">
                 <Image
@@ -443,7 +443,7 @@ function MenuContent() {
                   fill
                   className="object-cover"
                 />
-                <div className="absolute top-4 left-4 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                <div className="absolute top-4 left-4 bg-accent-400 text-white px-3 py-1 rounded-full text-sm font-medium">
                   {item.category}
                 </div>
               </div>
@@ -475,7 +475,7 @@ function MenuContent() {
                     {item.ingredients.map((ingredient, index) => (
                       <span 
                         key={index}
-                        className="text-xs bg-brown-700 text-brown-200 px-2 py-1 rounded"
+                        className="text-xs bg-primary-400 text-white px-2 py-1 rounded"
                       >
                         {ingredient}
                       </span>
@@ -490,7 +490,7 @@ function MenuContent() {
                       {item.allergens.map((allergen, index) => (
                         <span 
                           key={index}
-                          className="text-xs bg-red-900 text-red-200 px-2 py-1 rounded"
+                          className="text-xs bg-accent-500 text-white px-2 py-1 rounded"
                         >
                           {allergen}
                         </span>
@@ -519,7 +519,7 @@ function MenuContent() {
                         image: item.image
                       })
                     }}
-                    className="flex-1 bg-brown-700 hover:bg-brown-600 text-white px-3 py-2 rounded-lg transition-all duration-200 font-medium border border-brown-600 hover:border-brown-500 hover:scale-105 text-sm"
+                    className="flex-1 bg-primary-400 hover:bg-primary-300 text-white px-3 py-2 rounded-lg transition-all duration-200 font-medium border border-primary-300 hover:border-primary-200 hover:scale-105 text-sm"
                   >
                     🛒 Add to Cart
                   </button>
@@ -539,7 +539,7 @@ function MenuContent() {
                       // Navigate to checkout immediately
                       window.location.href = '/checkout?buyNow=true'
                     }}
-                    className="flex-1 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-3 py-2 rounded-lg transition-all duration-200 font-semibold shadow-lg hover:shadow-amber-500/25 hover:scale-105 text-sm relative overflow-hidden group"
+                    className="flex-1 bg-gradient-to-r from-accent-400 to-accent-500 hover:from-accent-500 hover:to-accent-600 text-white px-3 py-2 rounded-lg transition-all duration-200 font-semibold shadow-lg hover:shadow-accent-400/25 hover:scale-105 text-sm relative overflow-hidden group"
                   >
                     <span className="relative z-10">
                       ⚡ Buy Now
@@ -557,13 +557,13 @@ function MenuContent() {
           <div className="fixed bottom-4 right-4 z-40">
             <button
               onClick={toggleCart}
-              className="bg-amber-600 hover:bg-amber-700 text-white p-4 rounded-full shadow-lg transition-all hover:scale-105"
+              className="bg-accent-400 hover:bg-accent-500 text-white p-4 rounded-full shadow-lg transition-all hover:scale-105"
             >
               <div className="relative">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m-2.4-2l2 10m0 0h12m-8 4a2 2 0 100 4 2 2 0 000-4zm8 0a2 2 0 100 4 2 2 0 000-4z" />
                 </svg>
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-accent-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {items.reduce((sum: number, item: any) => sum + item.quantity, 0)}
                 </span>
               </div>
@@ -581,7 +581,7 @@ function MenuContent() {
 export default function MenuPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-brown-900 via-brown-800 to-brown-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-primary-500 via-primary-600 to-secondary-400 flex items-center justify-center">
         <div className="text-white text-xl">Loading menu...</div>
       </div>
     }>

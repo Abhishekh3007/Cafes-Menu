@@ -262,7 +262,7 @@ export default function CheckoutPage() {
           <p className="text-brown-200 mb-8">Add some delicious items to proceed with checkout</p>
           <button 
             onClick={() => router.push('/menu')}
-            className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-3 rounded-lg font-semibold"
+            className="bg-accent-400 hover:bg-accent-500 text-white px-8 py-3 rounded-lg font-semibold"
           >
             Browse Menu
           </button>
@@ -279,7 +279,7 @@ export default function CheckoutPage() {
           <div className="mb-6 bg-gradient-to-r from-amber-600 to-amber-700 p-4 rounded-lg shadow-lg">
             <div className="flex items-center justify-center space-x-2">
               <span className="text-white text-lg font-semibold">⚡ Express Checkout</span>
-              <span className="text-amber-100 text-sm">- Amazon-style one-click buy</span>
+              <span className="text-secondary-400 text-sm">- Amazon-style one-click buy</span>
             </div>
           </div>
         )}
@@ -291,20 +291,20 @@ export default function CheckoutPage() {
         {/* Login Prompt Modal */}
         {showLoginPrompt && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-brown-800 p-8 rounded-2xl border border-amber-300 border-opacity-20 max-w-md w-full mx-4">
+            <div className="bg-primary-600 p-8 rounded-2xl border border-accent-400 border-opacity-20 max-w-md w-full mx-4">
               <h2 className="text-2xl font-bold text-white mb-4 text-center">Login Required</h2>
               <p className="text-brown-200 mb-6 text-center">
                 Please sign in to complete your order
               </p>
               <div className="flex flex-col space-y-4">
                 <SignInButton mode="modal">
-                  <button className="w-full bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                  <button className="w-full bg-accent-400 hover:bg-accent-500 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
                     Sign In
                   </button>
                 </SignInButton>
                 <button
                   onClick={() => setShowLoginPrompt(false)}
-                  className="w-full bg-brown-600 hover:bg-brown-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+                  className="w-full bg-primary-500 hover:bg-primary-400 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
                 >
                   Cancel
                 </button>
@@ -315,24 +315,24 @@ export default function CheckoutPage() {
         
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Order Summary */}
-          <div className="bg-brown-800 bg-opacity-30 backdrop-blur-sm rounded-2xl p-6 border border-amber-300 border-opacity-20">
+          <div className="bg-primary-600 bg-opacity-30 backdrop-blur-sm rounded-2xl p-6 border border-accent-400 border-opacity-20">
             <h2 className="text-2xl font-display font-bold text-white mb-6">
               {isBuyNow ? '⚡ Express Order' : 'Order Summary'}
             </h2>
             
             <div className="space-y-4 mb-6">
               {currentItems.map((item) => (
-                <div key={item.id} className={`flex justify-between items-center py-3 border-b border-brown-700 ${isBuyNow ? 'bg-amber-900 bg-opacity-20 rounded-lg px-3' : ''}`}>
+                <div key={item.id} className={`flex justify-between items-center py-3 border-b border-primary-500 ${isBuyNow ? 'bg-secondary-400 bg-opacity-20 rounded-lg px-3' : ''}`}>
                   <div>
                     <h3 className="text-white font-medium">
                       {isBuyNow && '⚡ '}{item.name}
                     </h3>
                     <p className="text-brown-300 text-sm">Qty: {item.quantity || 1}</p>
                     {isBuyNow && (
-                      <p className="text-amber-300 text-xs font-medium">Express Checkout Item</p>
+                      <p className="text-accent-400 text-xs font-medium">Express Checkout Item</p>
                     )}
                   </div>
-                  <span className="text-amber-300 font-semibold">₹{(item.price * (item.quantity || 1)).toFixed(2)}</span>
+                  <span className="text-secondary-400 font-semibold">₹{(item.price * (item.quantity || 1)).toFixed(2)}</span>
                 </div>
               ))}
             </div>

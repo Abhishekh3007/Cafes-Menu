@@ -8,29 +8,57 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Primary: Pastel Blue/Soft Teal
         primary: {
-          50: '#f7f3f0',
-          100: '#ede3dc',
-          200: '#dcc7b8',
-          300: '#c6a587',
-          400: '#b08660',
-          500: '#a1714a',
-          600: '#8d5d3e',
-          700: '#744c36',
-          800: '#5f3f32',
-          900: '#4f352c',
+          50: '#f0f8ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#38bdf8',
+          500: '#A7C7E7', // Main pastel blue
+          600: '#6CA1A6', // Soft teal
+          700: '#0369a1',
+          800: '#075985',
+          900: '#0c4a6e',
         },
-        brown: {
-          50: '#fdf8f6',
-          100: '#f2e8e5',
-          200: '#eaddd7',
-          300: '#e0cec7',
-          400: '#d2bab0',
-          500: '#bfa094',
-          600: '#a18072',
-          700: '#977669',
-          800: '#846358',
-          900: '#43302b',
+        // Secondary: Creamy Yellow
+        secondary: {
+          50: '#fefce8',
+          100: '#fef9c3',
+          200: '#fef08a',
+          300: '#fde047',
+          400: '#FFFACD', // Main creamy yellow
+          500: '#eab308',
+          600: '#ca8a04',
+          700: '#a16207',
+          800: '#854d0e',
+          900: '#713f12',
+        },
+        // Accent: Hot Pink/Coral
+        accent: {
+          50: '#fdf2f8',
+          100: '#fce7f3',
+          200: '#fbcfe8',
+          300: '#f9a8d4',
+          400: '#FF69B4', // Hot pink
+          500: '#FF7F50', // Coral
+          600: '#db2777',
+          700: '#be185d',
+          800: '#9d174d',
+          900: '#831843',
+        },
+        // Keep some neutral colors for text and backgrounds
+        neutral: {
+          50: '#fafafa',
+          100: '#f5f5f5',
+          200: '#e5e5e5',
+          300: '#d4d4d4',
+          400: '#a3a3a3',
+          500: '#737373',
+          600: '#525252',
+          700: '#404040',
+          800: '#262626',
+          900: '#171717',
         }
       },
       fontFamily: {

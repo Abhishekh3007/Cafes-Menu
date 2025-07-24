@@ -5,20 +5,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 43, 48, 43;
-  --background-end-rgb: 67, 48, 43;
+  --foreground-rgb: 64, 64, 64;
+  --background-start-rgb: 167, 199, 231;
+  --background-end-rgb: 255, 250, 205;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
-      transparent,
+      rgb(var(--background-start-rgb)),
       rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    );
   font-family: 'Inter', sans-serif;
+  min-height: 100vh;
 }
 
 /* Add bottom padding for mobile devices to account for bottom navigation */
