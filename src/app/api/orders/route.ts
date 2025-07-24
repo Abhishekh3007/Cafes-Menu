@@ -7,6 +7,8 @@ import User from '@/models/User'
 export async function GET(request: NextRequest) {
   try {
     console.log('🔍 Orders API called')
+    
+    // Use currentUser() which works without middleware protection
     const user = await currentUser()
     
     if (!user) {

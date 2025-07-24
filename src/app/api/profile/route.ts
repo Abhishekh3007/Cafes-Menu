@@ -6,6 +6,8 @@ import User from '@/models/User'
 export async function GET(request: NextRequest) {
   try {
     console.log('🔍 Profile API called')
+    
+    // Use currentUser() which works without middleware protection
     const user = await currentUser()
     
     if (!user) {
@@ -16,7 +18,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    console.log('✅ Clerk user found:', user.id, user.emailAddresses?.[0]?.emailAddress)
+    console.log('✅ Clerk user found:', user.id)
 
     await dbConnect()
     console.log('✅ MongoDB connected')
