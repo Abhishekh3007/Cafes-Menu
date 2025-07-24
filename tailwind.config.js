@@ -8,58 +8,21 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Primary: Pastel Blue/Soft Teal
-        primary: {
-          50: '#f0f8ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#A7C7E7', // Main pastel blue
-          600: '#6CA1A6', // Soft teal
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
-        },
-        // Secondary: Creamy Yellow
-        secondary: {
-          50: '#fefce8',
-          100: '#fef9c3',
-          200: '#fef08a',
-          300: '#fde047',
-          400: '#FFFACD', // Main creamy yellow
-          500: '#eab308',
-          600: '#ca8a04',
-          700: '#a16207',
-          800: '#854d0e',
-          900: '#713f12',
-        },
-        // Accent: Hot Pink/Coral
-        accent: {
-          50: '#fdf2f8',
-          100: '#fce7f3',
-          200: '#fbcfe8',
-          300: '#f9a8d4',
-          400: '#FF69B4', // Hot pink
-          500: '#FF7F50', // Coral
-          600: '#db2777',
-          700: '#be185d',
-          800: '#9d174d',
-          900: '#831843',
-        },
-        // Keep some neutral colors for text and backgrounds
-        neutral: {
-          50: '#fafafa',
-          100: '#f5f5f5',
-          200: '#e5e5e5',
-          300: '#d4d4d4',
-          400: '#a3a3a3',
-          500: '#737373',
-          600: '#525252',
-          700: '#404040',
-          800: '#262626',
-          900: '#171717',
-        }
+        // Modern-Warm & Chic Palette
+        'warm-cream': '#FDFBF5',      // Main Background
+        'light-taupe': '#D3BBAF',     // Secondary Backgrounds
+        'vibrant-coral': '#E57F6A',   // Primary Buttons and Key Actions
+        'soft-gold': '#D1B07C',       // Main Headings and Highlights
+        'charcoal-brown': '#413F3D',  // Standard Body Text
+        
+        // Accent variations for better contrast
+        'coral-light': '#F2A393',     // Lighter coral for accents
+        'gold-light': '#E6C797',      // Lighter gold for accents
+        
+        // Additional supporting colors
+        'cream-dark': '#F7F3E9',      // Darker cream for subtle sections
+        'taupe-dark': '#C4A896',      // Darker taupe for borders
+        'brown-light': '#8B8985',     // Lighter brown for secondary text
       },
       fontFamily: {
         'display': ['Playfair Display', 'serif'],

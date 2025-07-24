@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useCart } from './CartProvider'
+import { useEffect } from 'react'
 
 export default function FullScreenCart() {
   const pathname = usePathname()
@@ -16,6 +17,26 @@ export default function FullScreenCart() {
     clearCart, 
     closeFullScreenCart 
   } = useCart()
+
+  // Handle escape key to close cart
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isFullScreenOpen) {
+        closeFullScreenCart()
+      }
+    }
+
+    if (isFullScreenOpen) {
+      document.addEventListener('keydown', handleEscapeKey)
+      // Prevent body scroll when cart is open
+      document.body.style.overflow = 'hidden'
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey)
+      document.body.style.overflow = 'unset'
+    }
+  }, [isFullScreenOpen, closeFullScreenCart])
 
   // Don't show on checkout page or when not open
   if (!isFullScreenOpen || pathname === '/checkout') return null

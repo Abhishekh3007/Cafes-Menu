@@ -6,20 +6,20 @@ import { useAuth } from '@/context/AuthContext'
 
 export default function FloatingCartButton() {
   const pathname = usePathname()
-  const { toggleFullScreenCart, items, isOpen, isFullScreenOpen } = useCart()
+  const { toggleCart, items, isOpen } = useCart()
   const { isAuthenticated } = useAuth()
   
   const itemCount = items.reduce((total, item) => total + item.quantity, 0)
   const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0)
 
   // Don't show if not authenticated, no items, on checkout page, or cart is already open
-  if (!isAuthenticated || items.length === 0 || pathname === '/checkout' || isOpen || isFullScreenOpen) {
+  if (!isAuthenticated || items.length === 0 || pathname === '/checkout' || isOpen) {
     return null
   }
 
   return (
     <button
-      onClick={toggleFullScreenCart}
+      onClick={toggleCart}
       className="hidden lg:flex fixed bottom-24 right-6 z-50 bg-gradient-to-r from-accent-400 to-accent-500 hover:from-accent-500 hover:to-accent-600 text-white p-4 rounded-full shadow-2xl hover:shadow-accent-400/25 transition-all duration-300 hover:scale-110 group"
       aria-label={`Shopping cart with ${itemCount} items`}
     >

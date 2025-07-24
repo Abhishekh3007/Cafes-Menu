@@ -5,18 +5,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --foreground-rgb: 64, 64, 64;
-  --background-start-rgb: 167, 199, 231;
-  --background-end-rgb: 255, 250, 205;
+  /* Modern-Warm & Chic Color Variables */
+  --warm-cream: #FDFBF5;
+  --light-taupe: #D3BBAF;
+  --vibrant-coral: #E57F6A;
+  --soft-gold: #D1B07C;
+  --charcoal-brown: #413F3D;
+  --coral-light: #F2A393;
+  --gold-light: #E6C797;
+  --cream-dark: #F7F3E9;
+  --taupe-dark: #C4A896;
+  --brown-light: #8B8985;
+  
+  --foreground-rgb: 65, 63, 61; /* charcoal-brown */
+  --background-start-rgb: 253, 251, 245; /* warm-cream */
+  --background-end-rgb: 247, 243, 233; /* cream-dark */
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      rgb(var(--background-start-rgb)),
-      rgb(var(--background-end-rgb))
-    );
+  background: rgb(var(--background-start-rgb));
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
 }
@@ -43,7 +51,7 @@ body {
 }
 
 .hero-pattern {
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a1714a' fill-opacity='0.05'%3E%3Cpath d='m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D1B07C' fill-opacity='0.05'%3E%3Cpath d='m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
 /* Subtle premium animations */
