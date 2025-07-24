@@ -157,15 +157,11 @@ export default function Hero() {
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
             <Link href="/menu" onClick={handleCloseAllCarts}>
               <button className="group relative overflow-hidden bg-gradient-to-r from-vibrant-coral to-coral-light hover:from-coral-light hover:to-vibrant-coral text-white text-lg font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-2xl hover:shadow-vibrant-coral/25 hover:scale-105 min-w-[200px]">
-                <span className="relative z-10">Order Online</span>
+                <span className="relative z-10">Order Now</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               </button>
             </Link>
-            <Link href="/reserve" onClick={handleCloseAllCarts}>
-              <button className="group border-2 border-charcoal-brown text-charcoal-brown hover:bg-charcoal-brown hover:text-warm-cream text-lg font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-2xl hover:shadow-charcoal-brown/25 hover:scale-105 min-w-[200px]">
-                Eat With Us
-              </button>
-            </Link>
+           
           </div>
         </div>
       </div>
