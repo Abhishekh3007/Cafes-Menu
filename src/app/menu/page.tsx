@@ -31,10 +31,6 @@ function MenuContent() {
   }, [categoryFromUrl])
 
   const handleAddToCart = (item: any) => {
-    if (!isAuthenticated) {
-      alert('Please login to add items to cart')
-      return
-    }
     addToCart(item)
   }
 
