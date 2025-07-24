@@ -12,7 +12,7 @@ export default function BottomNavigation() {
   const router = useRouter()
   const { isAuthenticated } = useAuth()
   const { isSignedIn, isLoaded } = useUser()
-  const { toggleFullScreenCart, items, closeCart, closeFullScreenCart } = useCart()
+  const { toggleFullScreenCart, items, closeCart, closeFullScreenCart, toggleCart } = useCart()
 
   const itemCount = items.reduce((total, item) => total + item.quantity, 0)
 
@@ -30,10 +30,10 @@ export default function BottomNavigation() {
       activeIcon: '🏠'
     },
     {
-      name: 'Menu',
+      name: 'Search',
       href: '/menu',
-      icon: '🍽️',
-      activeIcon: '🍽️'
+      icon: '🔍',
+      activeIcon: '🔍'
     },
     {
       name: 'Cart',
@@ -44,16 +44,16 @@ export default function BottomNavigation() {
       count: itemCount
     },
     {
-      name: 'Reserve',
-      href: '/reserve',
-      icon: '🎫',
-      activeIcon: '🎫'
+      name: 'Orders',
+      href: '/orders',
+      icon: '📦',
+      activeIcon: '📦'
     },
     {
       name: (isAuthenticated && isLoaded && isSignedIn) ? 'Profile' : 'Login',
       href: (isAuthenticated && isLoaded && isSignedIn) ? '/profile' : '/login',
-      icon: (isAuthenticated && isLoaded && isSignedIn) ? '👤' : '🔐',
-      activeIcon: (isAuthenticated && isLoaded && isSignedIn) ? '👤' : '🔐',
+      icon: '👤',
+      activeIcon: '👤',
       isProfile: true
     }
   ]
@@ -71,7 +71,7 @@ export default function BottomNavigation() {
   }
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-light-taupe border-t border-taupe-dark shadow-2xl">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-warm-cream border-t-2 border-taupe-dark shadow-2xl">
       <div className="grid grid-cols-5 h-16">
         {navItems.map((item) => {
           const isActive = pathname === item.href
@@ -80,52 +80,52 @@ export default function BottomNavigation() {
             <div key={item.name} className="relative">
               {item.isCart ? (
                 <button
-                  onClick={toggleFullScreenCart}
+                  onClick={toggleCart}
                   className={`w-full h-full flex flex-col items-center justify-center transition-all duration-200 ${
                     isActive 
-                      ? 'text-soft-gold bg-cream-dark' 
-                      : 'text-charcoal-brown hover:text-soft-gold hover:bg-cream-dark'
+                      ? 'text-vibrant-coral bg-light-taupe' 
+                      : 'text-charcoal-brown hover:text-vibrant-coral hover:bg-light-taupe'
                   }`}
                 >
                   <div className="relative">
-                    <span className="text-lg">{item.icon}</span>
+                    <span className="text-xl">{item.icon}</span>
                     {item.count > 0 && (
                       <span className="absolute -top-2 -right-2 bg-vibrant-coral text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-bold">
                         {item.count > 9 ? '9+' : item.count}
                       </span>
                     )}
                   </div>
-                  <span className="text-xs font-medium mt-1">{item.name}</span>
+                  <span className="text-xs font-semibold mt-1">{item.name}</span>
                 </button>
               ) : item.isProfile ? (
                 <button
                   onClick={handleProfileClick}
                   className={`w-full h-full flex flex-col items-center justify-center transition-all duration-200 ${
                     isActive 
-                      ? 'text-soft-gold bg-cream-dark' 
-                      : 'text-charcoal-brown hover:text-soft-gold hover:bg-cream-dark'
+                      ? 'text-vibrant-coral bg-light-taupe' 
+                      : 'text-charcoal-brown hover:text-vibrant-coral hover:bg-light-taupe'
                   }`}
                 >
-                  <span className="text-lg">{item.icon}</span>
-                  <span className="text-xs font-medium mt-1">{item.name}</span>
+                  <span className="text-xl">{item.icon}</span>
+                  <span className="text-xs font-semibold mt-1">{item.name}</span>
                 </button>
               ) : (
                 <button
                   onClick={() => handleNavigation(item.href)}
                   className={`w-full h-full flex flex-col items-center justify-center transition-all duration-200 ${
                     isActive 
-                      ? 'text-soft-gold bg-cream-dark' 
-                      : 'text-charcoal-brown hover:text-soft-gold hover:bg-cream-dark'
+                      ? 'text-vibrant-coral bg-light-taupe' 
+                      : 'text-charcoal-brown hover:text-vibrant-coral hover:bg-light-taupe'
                   }`}
                 >
-                  <span className="text-lg">{item.icon}</span>
-                  <span className="text-xs font-medium mt-1">{item.name}</span>
+                  <span className="text-xl">{item.icon}</span>
+                  <span className="text-xs font-semibold mt-1">{item.name}</span>
                 </button>
               )}
               
               {/* Active indicator */}
               {isActive && (
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-vibrant-coral rounded-b-full"></div>
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-10 h-1 bg-vibrant-coral rounded-b-full"></div>
               )}
             </div>
           )
