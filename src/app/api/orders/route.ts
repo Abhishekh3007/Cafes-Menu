@@ -1,33 +1,62 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { currentUser } from '@clerk/nextjs/server'
 import dbConnect from '@/lib/mongodb'
 import Order from '@/models/Order'
+import User from '@/models/User'
 
 export async function GET(request: NextRequest) {
   try {
-    await dbConnect()
+    console.log('🔍 Orders API called')
+    const user = await currentUser()
     
+    if (!user) {
+      console.log('❌ No user found in Clerk for orders')
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
+    console.log('✅ Clerk user found for orders:', user.id)
+
+    await dbConnect()
+    console.log('✅ MongoDB connected for orders')
+    
+    // Find the user's MongoDB document to get their ObjectId
+    const userProfile = await User.findOne({ clerkId: user.id })
+    console.log('🔍 User profile for orders:', userProfile ? userProfile._id : 'Not found')
+    
+    if (!userProfile) {
+      console.log('⚠️ No user profile found, returning empty orders')
+      return NextResponse.json({
+        success: true,
+        orders: [],
+      })
+    }
+
     const { searchParams } = new URL(request.url)
-    const userId = searchParams.get('userId')
     const status = searchParams.get('status')
 
-    let filter: any = {}
-    
-    if (userId) {
-      filter.customer = userId
+    let filter: any = {
+      customer: userProfile._id
     }
     
     if (status) {
       filter.status = status
     }
 
+    console.log('🔍 Orders filter:', filter)
+
     const orders = await Order.find(filter)
       .populate('customer', 'name email phone')
       .populate('items.menuItem', 'name price image')
       .sort({ createdAt: -1 })
 
+    console.log('📊 Orders found:', orders.length)
+
     return NextResponse.json({
       success: true,
-      data: orders,
+      orders: orders,
     })
 
   } catch (error) {

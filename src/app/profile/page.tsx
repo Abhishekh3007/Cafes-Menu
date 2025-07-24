@@ -71,6 +71,50 @@ function ProfilePage() {
     }
   }
 
+  // Create test data for testing
+  const createTestData = async () => {
+    try {
+      const response = await fetch('/api/test-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'create' })
+      })
+      
+      if (response.ok) {
+        // Refresh data
+        await Promise.all([fetchProfile(), fetchOrders()])
+        alert('Test data created successfully!')
+      } else {
+        alert('Failed to create test data')
+      }
+    } catch (error) {
+      console.error('Error creating test data:', error)
+      alert('Error creating test data')
+    }
+  }
+
+  // Clear test data
+  const clearTestData = async () => {
+    try {
+      const response = await fetch('/api/test-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'clear' })
+      })
+      
+      if (response.ok) {
+        // Refresh data
+        await Promise.all([fetchProfile(), fetchOrders()])
+        alert('Test data cleared successfully!')
+      } else {
+        alert('Failed to clear test data')
+      }
+    } catch (error) {
+      console.error('Error clearing test data:', error)
+      alert('Error clearing test data')
+    }
+  }
+
   useEffect(() => {
     const loadUserData = async () => {
       if (isAuthenticated && clerkUser) {
@@ -199,6 +243,28 @@ function ProfilePage() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Test Data Buttons (for testing) */}
+        <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 shadow-sm">
+          <h3 className="text-sm font-medium text-yellow-800 mb-3">Test Data Controls</h3>
+          <div className="flex space-x-3">
+            <button
+              onClick={createTestData}
+              className="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            >
+              Create Test Data
+            </button>
+            <button
+              onClick={clearTestData}
+              className="flex-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            >
+              Clear Test Data
+            </button>
+          </div>
+          <p className="text-xs text-yellow-700 mt-2">
+            Use these buttons to test the loyalty points and orders system
+          </p>
         </div>
 
         {/* Favorites and Rewards Cards */}

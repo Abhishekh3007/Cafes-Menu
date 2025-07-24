@@ -5,21 +5,28 @@ import User from '@/models/User'
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('🔍 Profile API called')
     const user = await currentUser()
     
     if (!user) {
+      console.log('❌ No user found in Clerk')
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       )
     }
 
+    console.log('✅ Clerk user found:', user.id, user.emailAddresses?.[0]?.emailAddress)
+
     await dbConnect()
+    console.log('✅ MongoDB connected')
 
     // Find or create user profile
     let userProfile = await User.findOne({ clerkId: user.id })
+    console.log('🔍 User profile query result:', userProfile ? 'Found' : 'Not found')
     
     if (!userProfile) {
+      console.log('🆕 Creating new user profile')
       // Create new user profile with basic info
       userProfile = new User({
         clerkId: user.id,
@@ -28,10 +35,12 @@ export async function GET(request: NextRequest) {
         phone: user.phoneNumbers?.[0]?.phoneNumber || '',
         loyaltyPoints: 0,
         totalOrders: 0,
-        joinedDate: new Date()
+        joinedDate: new Date(),
+        mobile: user.phoneNumbers?.[0]?.phoneNumber || '' // Required field
       })
       
       await userProfile.save()
+      console.log('✅ New user profile created')
     }
 
     const profile = {
@@ -45,6 +54,8 @@ export async function GET(request: NextRequest) {
       joinedDate: userProfile.joinedDate,
       membershipTier: getTierFromPoints(userProfile.loyaltyPoints || 0)
     }
+
+    console.log('📊 Profile data:', profile)
 
     return NextResponse.json({
       success: true,
