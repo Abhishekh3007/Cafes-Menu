@@ -10,17 +10,17 @@ const popularItems = [
     id: 1,
     name: 'Paneer Tikka/Butter Masala',
     description: 'Creamy Paneer Tikka (spicy) or Butter (sweet) Masala served with Rice or Kulcha',
-    price: 2.95,
-    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+    price: 295,
+    image: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'House Specials',
     rating: 4.9,
     isPopular: true
   },
   {
     id: 2,
-    name: 'Dal Makhni',
-    description: 'Creamy homemade Kali Dal served with Rice or Kulcha',
-    price: 2.95,
+    name: 'Dal Makhni with Rice or Kulcha',
+    description: 'Creamy homemade Kail Dal served with Rice or Kulcha',
+    price: 295,
     image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'House Specials',
     rating: 4.8,
@@ -30,28 +30,28 @@ const popularItems = [
     id: 3,
     name: 'Khao Suey',
     description: 'Coconut based Curry filled with noodles and loads of condiments',
-    price: 2.80,
+    price: 280,
     image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'House Specials',
-    rating: 4.7,
+    rating: 4.8,
     isPopular: true
   },
   {
     id: 4,
-    name: 'Fantasy Pizza',
-    description: 'Onions, Bell peppers, Paneer, Coriander, and Oregano',
-    price: 2.90,
-    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+    name: 'Neapolitan Pizza',
+    description: 'Onions, Bellpeppers, Black Olives, Jalepeno, Chilli Garlic Oil',
+    price: 290,
+    image: 'https://images.unsplash.com/photo-1595708684082-a173bb3a06c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Pizza',
-    rating: 4.6,
+    rating: 4.9,
     isPopular: true
   },
   {
     id: 5,
     name: 'Milkshakes',
-    description: 'KitKat/Vanilla/Strawberry/Chocolate varieties',
-    price: 1.60,
-    image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+    description: 'KitKat/Vanilla/Strawberry/Chocolate flavored milkshakes',
+    price: 160,
+    image: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Drinks',
     rating: 4.8,
     isPopular: true
@@ -60,10 +60,10 @@ const popularItems = [
     id: 6,
     name: 'Sliders Appetizers',
     description: 'Mini burgers (2 sliders) perfect for sharing',
-    price: 2.60,
-    image: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+    price: 260,
+    image: 'https://images.unsplash.com/photo-1586816001966-79b736744398?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     category: 'Small Bites',
-    rating: 4.7,
+    rating: 4.9,
     isPopular: true
   }
 ]
@@ -117,7 +117,7 @@ export default function PopularItems() {
                     {item.name}
                   </h3>
                   <span className="text-amber-300 font-bold text-lg">
-                    ${item.price}
+                    ₹{item.price}
                   </span>
                 </div>
                 <p className="text-brown-200 mb-3 text-sm">
