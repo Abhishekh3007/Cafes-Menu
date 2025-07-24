@@ -28,21 +28,64 @@ export async function GET(request: NextRequest) {
     console.log('🔍 User profile query result:', userProfile ? 'Found' : 'Not found')
     
     if (!userProfile) {
-      console.log('🆕 Creating new user profile')
-      // Create new user profile with basic info
-      userProfile = new User({
-        clerkId: user.id,
-        email: user.emailAddresses?.[0]?.emailAddress || '',
-        name: user.firstName || user.username || 'User',
-        phone: user.phoneNumbers?.[0]?.phoneNumber || '',
-        loyaltyPoints: 0,
-        totalOrders: 0,
-        joinedDate: new Date(),
-        mobile: user.phoneNumbers?.[0]?.phoneNumber || '' // Required field
-      })
+      // Check if user exists by email (for migration from old system)
+      const existingUser = await User.findOne({ email: user.emailAddresses?.[0]?.emailAddress })
       
-      await userProfile.save()
-      console.log('✅ New user profile created')
+      if (existingUser) {
+        console.log('🔄 Found existing user by email, updating with clerkId')
+        // Update existing user with clerkId
+        userProfile = await User.findOneAndUpdate(
+          { email: user.emailAddresses?.[0]?.emailAddress },
+          { 
+            clerkId: user.id,
+            name: user.firstName || user.username || existingUser.name,
+            phone: user.phoneNumbers?.[0]?.phoneNumber || existingUser.phone,
+            updatedAt: new Date()
+          },
+          { new: true }
+        )
+        console.log('✅ Updated existing user with clerkId')
+      } else {
+        console.log('🆕 Creating new user profile')
+        // Create new user profile with basic info
+        try {
+          userProfile = new User({
+            clerkId: user.id,
+            email: user.emailAddresses?.[0]?.emailAddress || '',
+            name: user.firstName || user.username || 'User',
+            phone: user.phoneNumbers?.[0]?.phoneNumber || '',
+            loyaltyPoints: 0,
+            totalOrders: 0,
+            joinedDate: new Date(),
+            mobile: user.phoneNumbers?.[0]?.phoneNumber || '' // Required field
+          })
+          
+          await userProfile.save()
+          console.log('✅ New user profile created')
+        } catch (error: any) {
+          if (error.code === 11000) {
+            // Handle duplicate key error by finding the existing user
+            console.log('⚠️ Duplicate key error, finding existing user')
+            userProfile = await User.findOne({ 
+              $or: [
+                { email: user.emailAddresses?.[0]?.emailAddress },
+                { clerkId: user.id }
+              ]
+            })
+            
+            if (userProfile && !userProfile.clerkId) {
+              // Update with clerkId if missing
+              userProfile = await User.findOneAndUpdate(
+                { _id: userProfile._id },
+                { clerkId: user.id },
+                { new: true }
+              )
+            }
+          } else {
+            throw error
+          }
+        }
+      }
     }
 
     const profile = {
@@ -66,8 +109,19 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Profile API error:', error)
+    
+    // Provide more specific error messages
+    let errorMessage = 'Failed to fetch profile'
+    if (error instanceof Error) {
+      if (error.message.includes('duplicate key')) {
+        errorMessage = 'Profile already exists with this email'
+      } else if (error.message.includes('MONGODB_URI')) {
+        errorMessage = 'Database connection error'
+      }
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to fetch profile' },
+      { error: errorMessage },
       { status: 500 }
     )
   }

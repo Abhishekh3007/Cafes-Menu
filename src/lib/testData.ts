@@ -36,9 +36,11 @@ export async function createTestDataForUser(clerkUserId: string) {
         ],
         totalAmount: 820,
         status: 'delivered',
+        orderType: 'delivery',
+        paymentMethod: 'online',
+        paymentStatus: 'paid',
         orderDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
         deliveryDate: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), // 6 days ago
-        paymentStatus: 'completed',
         deliveryAddress: '123 Main St, City, State 12345'
       },
       {
@@ -54,9 +56,11 @@ export async function createTestDataForUser(clerkUserId: string) {
         ],
         totalAmount: 280,
         status: 'delivered',
+        orderType: 'delivery',
+        paymentMethod: 'online',  
+        paymentStatus: 'paid',
         orderDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
         deliveryDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-        paymentStatus: 'completed',
         deliveryAddress: '123 Main St, City, State 12345'
       },
       {
@@ -71,9 +75,11 @@ export async function createTestDataForUser(clerkUserId: string) {
           }
         ],
         totalAmount: 240,
-        status: 'out_for_delivery',
+        status: 'preparing',
+        orderType: 'delivery',
+        paymentMethod: 'online',
+        paymentStatus: 'paid',
         orderDate: new Date(),
-        paymentStatus: 'completed',
         deliveryAddress: '123 Main St, City, State 12345'
       }
     ]
