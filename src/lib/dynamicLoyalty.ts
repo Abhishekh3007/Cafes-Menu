@@ -1,4 +1,4 @@
-import { connectToDatabase } from '@/lib/mongodb'
+import dbConnect from '@/lib/mongodb'
 import User from '@/models/User'
 import Order from '@/models/Order'
 
@@ -11,7 +11,7 @@ export interface LoyaltyUpdate {
 
 export async function awardLoyaltyPoints(update: LoyaltyUpdate): Promise<boolean> {
   try {
-    await connectToDatabase()
+    await dbConnect()
     
     const user = await User.findOneAndUpdate(
       { clerkId: update.userId },
@@ -41,7 +41,7 @@ export async function awardLoyaltyPoints(update: LoyaltyUpdate): Promise<boolean
 
 export async function updateOrderStatus(orderId: string, status: string, clerkUserId?: string): Promise<boolean> {
   try {
-    await connectToDatabase()
+    await dbConnect()
     
     const order = await Order.findByIdAndUpdate(
       orderId,

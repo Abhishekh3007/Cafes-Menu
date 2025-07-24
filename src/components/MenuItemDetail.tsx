@@ -90,7 +90,7 @@ export default function MenuItemDetail({ item, onClose }: MenuItemDetailProps) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end justify-center">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-end justify-center">
       <div className="bg-white w-full max-w-md h-[85vh] flex flex-col rounded-t-3xl">
         {/* Header */}
         <div className="flex-shrink-0 bg-white p-4 border-b border-gray-200 flex items-center justify-between">
@@ -190,20 +190,19 @@ export default function MenuItemDetail({ item, onClose }: MenuItemDetailProps) {
         </div>
 
         {/* Sticky Action Buttons */}
-        <div className="flex-shrink-0 bg-white border-t border-gray-200 p-4">
+        <div className="flex-shrink-0 bg-white border-t border-gray-200 p-4 pb-6 sticky bottom-0 mb-safe">
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={handleAddToCart}
-              className="bg-white border-2 border-orange-500 text-orange-500 py-3 px-6 rounded-xl font-semibold hover:bg-orange-50 transition-colors"
+              className="bg-white border-2 border-orange-500 text-orange-500 py-4 px-6 rounded-xl font-semibold hover:bg-orange-50 transition-colors text-base"
             >
               Add to Cart
             </button>
             <button
               onClick={handleBuyNow}
-              className="bg-orange-500 text-white py-3 px-6 rounded-xl font-semibold hover:bg-orange-600 transition-colors flex items-center justify-center space-x-2"
+              className="bg-orange-500 text-white py-4 px-6 rounded-xl font-semibold hover:bg-orange-600 transition-colors flex items-center justify-center space-x-2 text-base"
             >
-              <span>+</span>
-              <span>Add</span>
+              <span>Buy Now</span>
             </button>
           </div>
         </div>

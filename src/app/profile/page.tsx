@@ -187,7 +187,7 @@ function ProfilePage() {
             </div>
             <div className="flex-1">
               <h1 className="text-xl font-bold text-gray-800">Welcome back!</h1>
-              <p className="text-gray-600">{profile.mobile}</p>
+              <p className="text-gray-600">{profile.email}</p>
               <div className="flex items-center space-x-4 mt-2">
                 <div className="flex items-center space-x-1">
                   <svg className="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
@@ -210,7 +210,7 @@ function ProfilePage() {
               </svg>
             </div>
             <h3 className="font-semibold text-gray-800">Favorites</h3>
-            <p className="text-gray-500 text-sm">{profile.favoriteItems} saved items</p>
+            <p className="text-gray-500 text-sm">0 saved items</p>
           </div>
           
           <div className="bg-white rounded-2xl p-6 shadow-sm text-center">
@@ -220,7 +220,7 @@ function ProfilePage() {
               </svg>
             </div>
             <h3 className="font-semibold text-gray-800">Rewards</h3>
-            <p className="text-gray-500 text-sm">{profile.availableRewards} available</p>
+            <p className="text-gray-500 text-sm">{Math.floor(profile.loyaltyPoints / 100)} available</p>
           </div>
         </div>
 

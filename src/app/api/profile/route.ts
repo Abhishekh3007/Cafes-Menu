@@ -1,49 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs'
-import { connectToDatabase } from '@/lib/mongodb'
+import { currentUser } from '@clerk/nextjs/server'
+import dbConnect from '@/lib/mongodb'
 import User from '@/models/User'
 
 export async function GET(request: NextRequest) {
   try {
-    const { userId } = auth()
+    const user = await currentUser()
     
-    if (!userId) {
+    if (!user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       )
     }
 
-    await connectToDatabase()
+    await dbConnect()
 
     // Find or create user profile
-    let user = await User.findOne({ clerkId: userId })
+    let userProfile = await User.findOne({ clerkId: user.id })
     
-    if (!user) {
+    if (!userProfile) {
       // Create new user profile with basic info
-      user = new User({
-        clerkId: userId,
-        email: '',
-        name: 'User',
-        phone: '',
+      userProfile = new User({
+        clerkId: user.id,
+        email: user.emailAddresses?.[0]?.emailAddress || '',
+        name: user.firstName || user.username || 'User',
+        phone: user.phoneNumbers?.[0]?.phoneNumber || '',
         loyaltyPoints: 0,
         totalOrders: 0,
         joinedDate: new Date()
       })
       
-      await user.save()
+      await userProfile.save()
     }
 
     const profile = {
-      _id: user._id,
-      clerkId: user.clerkId,
-      email: user.email,
-      name: user.name,
-      phone: user.phone,
-      loyaltyPoints: user.loyaltyPoints || 0,
-      totalOrders: user.totalOrders || 0,
-      joinedDate: user.joinedDate,
-      membershipTier: getTierFromPoints(user.loyaltyPoints || 0)
+      _id: userProfile._id,
+      clerkId: userProfile.clerkId,
+      email: userProfile.email,
+      name: userProfile.name,
+      phone: userProfile.phone,
+      loyaltyPoints: userProfile.loyaltyPoints || 0,
+      totalOrders: userProfile.totalOrders || 0,
+      joinedDate: userProfile.joinedDate,
+      membershipTier: getTierFromPoints(userProfile.loyaltyPoints || 0)
     }
 
     return NextResponse.json({
@@ -62,57 +62,50 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
+    const user = await currentUser()
+    
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
+    const body = await request.json()
+    const { name, phone } = body
+
     await dbConnect()
-    
-    const authHeader = request.headers.get('authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Authorization token required' }, { status: 401 })
-    }
 
-    const token = authHeader.substring(7)
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any
-    
-    const updateData = await request.json()
-    
-    // Remove fields that shouldn't be updated via this endpoint
-    delete updateData.mobile
-    delete updateData.password
-    delete updateData.role
-    delete updateData.loyaltyPoints
-    delete updateData.totalOrders
-    delete updateData.isVerified
-
-    // Convert date string to Date object if provided
-    if (updateData.dateOfBirth) {
-      updateData.dateOfBirth = new Date(updateData.dateOfBirth)
-    }
-
-    // Mark profile as complete if basic fields are filled
-    const profileComplete = !!(
-      updateData.name &&
-      updateData.email &&
-      updateData.dateOfBirth &&
-      updateData.gender
+    const userProfile = await User.findOneAndUpdate(
+      { clerkId: user.id },
+      { 
+        name: name || undefined,
+        phone: phone || undefined,
+        updatedAt: new Date()
+      },
+      { new: true }
     )
 
-    const user = await User.findByIdAndUpdate(
-      decoded.userId,
-      { 
-        ...updateData,
-        profileComplete,
-        lastLogin: new Date()
-      },
-      { new: true, runValidators: true }
-    ).select('-password')
-
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    if (!userProfile) {
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      )
     }
 
     return NextResponse.json({
       success: true,
-      data: user,
-      message: 'Profile updated successfully'
+      profile: {
+        _id: userProfile._id,
+        clerkId: userProfile.clerkId,
+        email: userProfile.email,
+        name: userProfile.name,
+        phone: userProfile.phone,
+        loyaltyPoints: userProfile.loyaltyPoints || 0,
+        totalOrders: userProfile.totalOrders || 0,
+        joinedDate: userProfile.joinedDate,
+        membershipTier: getTierFromPoints(userProfile.loyaltyPoints || 0)
+      }
     })
 
   } catch (error) {
@@ -122,4 +115,11 @@ export async function PUT(request: NextRequest) {
       { status: 500 }
     )
   }
+}
+
+function getTierFromPoints(points: number): string {
+  if (points >= 5000) return 'Platinum Member'
+  if (points >= 2000) return 'Gold Member'
+  if (points >= 500) return 'Silver Member'
+  return 'Bronze Member'
 }

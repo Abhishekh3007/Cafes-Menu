@@ -71,7 +71,7 @@ export default function BottomNavigation() {
   }
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-warm-cream border-t-2 border-taupe-dark shadow-2xl">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-warm-cream border-t-2 border-taupe-dark shadow-2xl">
       <div className="grid grid-cols-5 h-16">
         {navItems.map((item) => {
           const isActive = pathname === item.href

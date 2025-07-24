@@ -38,7 +38,7 @@ export default function FullScreenCart() {
   if (!isFullScreenOpen || pathname === '/checkout') return null
 
   return (
-    <div className="fixed inset-0 z-50 bg-gray-50">
+    <div className="fixed inset-0 z-[55] bg-gray-50">
       <div className="flex h-full flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 bg-white shadow-sm">
@@ -167,11 +167,13 @@ export default function FullScreenCart() {
               </div>
             </div>
             
-            <Link href="/checkout" onClick={closeFullScreenCart}>
-              <button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-medium transition-colors">
-                Proceed to Checkout
-              </button>
-            </Link>
+            <div className="sticky bottom-0 bg-white pt-4 pb-6 border-t border-gray-200 mb-safe">
+              <Link href="/checkout" onClick={closeFullScreenCart}>
+                <button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-lg font-semibold transition-colors text-lg shadow-lg">
+                  Proceed to Checkout • ₹{totalAmount.toFixed(2)}
+                </button>
+              </Link>
+            </div>
           </div>
         )}
       </div>

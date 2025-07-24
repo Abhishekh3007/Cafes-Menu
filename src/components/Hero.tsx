@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useCart } from './CartProvider'
 import { SignInButton, SignUpButton, useUser } from '@clerk/nextjs'
 import ClerkUserButton from './ClerkUserButton'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 export default function Hero() {
   const { isAuthenticated, user } = useAuth()
@@ -13,13 +13,13 @@ export default function Hero() {
   const { toggleCart, toggleFullScreenCart, items, closeCart, closeFullScreenCart } = useCart()
 
   // Text morphing animation
-  const phrases = [
+  const phrases = useMemo(() => [
     "Feeling a little hungry?",
     "Craving something sweet?", 
     "Or a warm, savory bite?",
     "Time for the perfect coffee?",
     "Let's make your day delicious."
-  ]
+  ], [])
 
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0)
   const [displayText, setDisplayText] = useState('')
