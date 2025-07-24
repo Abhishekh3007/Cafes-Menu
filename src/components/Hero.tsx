@@ -5,11 +5,57 @@ import { useAuth } from '@/context/AuthContext'
 import { useCart } from './CartProvider'
 import { SignInButton, SignUpButton, useUser } from '@clerk/nextjs'
 import ClerkUserButton from './ClerkUserButton'
+import { useState, useEffect } from 'react'
 
 export default function Hero() {
   const { isAuthenticated, user } = useAuth()
   const { isSignedIn, isLoaded } = useUser()
   const { toggleCart, toggleFullScreenCart, items, closeCart, closeFullScreenCart } = useCart()
+
+  // Text morphing animation
+  const phrases = [
+    "Feeling a little hungry?",
+    "Craving something sweet?", 
+    "Or a warm, savory bite?",
+    "Time for the perfect coffee?",
+    "Let's make your day delicious."
+  ]
+
+  const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0)
+  const [displayText, setDisplayText] = useState('')
+  const [isTyping, setIsTyping] = useState(true)
+
+  useEffect(() => {
+    const currentPhrase = phrases[currentPhraseIndex]
+    let timeout: NodeJS.Timeout
+
+    if (isTyping) {
+      // Typing effect
+      if (displayText.length < currentPhrase.length) {
+        timeout = setTimeout(() => {
+          setDisplayText(currentPhrase.substring(0, displayText.length + 1))
+        }, 80)
+      } else {
+        // Pause before erasing
+        timeout = setTimeout(() => {
+          setIsTyping(false)
+        }, 2000)
+      }
+    } else {
+      // Erasing effect
+      if (displayText.length > 0) {
+        timeout = setTimeout(() => {
+          setDisplayText(displayText.substring(0, displayText.length - 1))
+        }, 50)
+      } else {
+        // Move to next phrase
+        setCurrentPhraseIndex((prev) => (prev + 1) % phrases.length)
+        setIsTyping(true)
+      }
+    }
+
+    return () => clearTimeout(timeout)
+  }, [displayText, isTyping, currentPhraseIndex, phrases])
 
   const handleCloseAllCarts = () => {
     closeCart()
@@ -148,10 +194,18 @@ export default function Hero() {
           </h1>
 
           {/* Elegant Description */}
-          <p className="text-lg md:text-2xl text-brown-light mb-10 max-w-3xl mx-auto leading-relaxed font-light">
+          <p className="text-lg md:text-2xl text-brown-light mb-6 max-w-3xl mx-auto leading-relaxed font-light">
             Where culinary artistry meets exceptional service. Experience the finest flavors 
             crafted with passion and served with elegance.
           </p>
+
+          {/* Morphing Text Animation */}
+          <div className="mb-10 h-16 flex items-center justify-center">
+            <p className="text-xl md:text-3xl font-medium text-vibrant-coral min-h-[1.5em] flex items-center">
+              {displayText}
+              <span className="ml-1 animate-pulse text-soft-gold">|</span>
+            </p>
+          </div>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
