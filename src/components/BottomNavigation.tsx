@@ -80,7 +80,7 @@ export default function BottomNavigation() {
             <div key={item.name} className="relative">
               {item.isCart ? (
                 <button
-                  onClick={toggleCart}
+                  onClick={toggleFullScreenCart}
                   className={`w-full h-full flex flex-col items-center justify-center transition-all duration-200 ${
                     isActive 
                       ? 'text-vibrant-coral bg-light-taupe' 

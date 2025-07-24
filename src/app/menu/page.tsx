@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { useCart } from '@/components/CartProvider'
 import { useAuth } from '@/context/AuthContext'
 import Cart from '@/components/Cart'
+import MenuItemDetail from '@/components/MenuItemDetail'
 
 // Complete Menu data from SONNAS menu
 const menuItems = [
@@ -259,6 +260,7 @@ function MenuContent() {
   const searchParams = useSearchParams()
   const categoryFromUrl = searchParams.get('category')
   const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl || 'All')
+  const [selectedItem, setSelectedItem] = useState<any>(null)
   const { addToCart } = useCart()
   const { isAuthenticated } = useAuth()
 
@@ -344,6 +346,12 @@ function MenuContent() {
                     <span className="relative z-10">Add to Cart</span>
                     <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
                   </button>
+                  <button
+                    onClick={() => setSelectedItem(item)}
+                    className="px-3 py-2 border-2 border-vibrant-coral text-vibrant-coral hover:bg-vibrant-coral hover:text-white rounded-lg transition-all duration-200 font-semibold hover:scale-105 text-sm"
+                  >
+                    Customize
+                  </button>
                 </div>
               </div>
             </div>
@@ -352,6 +360,13 @@ function MenuContent() {
       </div>
       
       <Cart />
+      
+      {selectedItem && (
+        <MenuItemDetail 
+          item={selectedItem} 
+          onClose={() => setSelectedItem(null)} 
+        />
+      )}
     </div>
   )
 }
