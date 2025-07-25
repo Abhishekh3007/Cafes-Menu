@@ -115,19 +115,115 @@ export default function CheckoutPage() {
     setLoyaltyDiscount(discount)
   }
 
-  const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords
-          alert(`Current Location: ${latitude}, ${longitude}\nThis feature will be enhanced to auto-fill address in future updates.`)
-        },
-        (error) => {
-          alert('Unable to retrieve your location. Please enter address manually.')
+  const [isLocationLoading, setIsLocationLoading] = useState(false)
+  const [showLandmarkModal, setShowLandmarkModal] = useState(false)
+  const [pendingLocationData, setPendingLocationData] = useState<any>(null)
+
+  const getCurrentLocation = async () => {
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported by this browser.')
+      return
+    }
+
+    setIsLocationLoading(true)
+    setError(null)
+
+    try {
+      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 60000
+        })
+      })
+
+      const { latitude, longitude } = position.coords
+      
+      // Show map link and get address
+      const mapUrl = `https://www.google.com/maps?q=${latitude},${longitude}`
+      
+      // Try to get address using free geocoding service
+      try {
+        // Using Nominatim (OpenStreetMap) - free reverse geocoding
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`,
+          {
+            headers: {
+              'User-Agent': 'SONNAS Restaurant App'
+            }
+          }
+        )
+        
+        if (response.ok) {
+          const data = await response.json()
+          
+          if (data && data.address) {
+            const addr = data.address
+            const locationData = {
+              address: data.display_name || `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
+              city: addr.city || addr.town || addr.village || addr.suburb || '',
+              pincode: addr.postcode || '',
+              mapUrl: mapUrl,
+              coordinates: { latitude, longitude }
+            }
+            
+            setPendingLocationData(locationData)
+            setShowLandmarkModal(true)
+          } else {
+            throw new Error('No address found')
+          }
+        } else {
+          throw new Error('Geocoding service unavailable')
         }
-      )
-    } else {
-      alert('Geolocation is not supported by this browser.')
+      } catch (geocodeError) {
+        // Fallback: Use coordinates with manual entry
+        const locationData = {
+          address: `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)}`,
+          city: '',
+          pincode: '',
+          mapUrl: mapUrl,
+          coordinates: { latitude, longitude }
+        }
+        
+        setPendingLocationData(locationData)
+        setShowLandmarkModal(true)
+      }
+      
+    } catch (error: any) {
+      let errorMessage = 'Unable to retrieve your location.'
+      
+      if (error.code) {
+        switch (error.code) {
+          case 1: // PERMISSION_DENIED
+            errorMessage = 'Location access denied. Please allow location access and try again.'
+            break
+          case 2: // POSITION_UNAVAILABLE
+            errorMessage = 'Location information is unavailable.'
+            break
+          case 3: // TIMEOUT
+            errorMessage = 'Location request timed out. Please try again.'
+            break
+        }
+      }
+      
+      setError(errorMessage)
+    } finally {
+      setIsLocationLoading(false)
+    }
+  }
+
+  const confirmLocationWithLandmark = (landmark: string) => {
+    if (pendingLocationData) {
+      setDeliveryAddress(prev => ({
+        ...prev,
+        address: pendingLocationData.address,
+        city: pendingLocationData.city,
+        pincode: pendingLocationData.pincode,
+        landmark: landmark
+      }))
+      
+      setShowLandmarkModal(false)
+      setPendingLocationData(null)
     }
   }
 
@@ -308,6 +404,95 @@ export default function CheckoutPage() {
                 >
                   Cancel
                 </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Location Confirmation Modal */}
+        {showLandmarkModal && pendingLocationData && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-8 rounded-2xl border-2 border-soft-gold shadow-2xl max-w-lg w-full mx-4">
+              <h2 className="text-2xl font-bold text-charcoal-brown mb-4 text-center">📍 Confirm Your Location</h2>
+              
+              <div className="space-y-4 mb-6">
+                <div className="bg-cream-dark p-4 rounded-lg border-2 border-soft-gold">
+                  <p className="text-charcoal-brown font-medium mb-2">📍 Detected Address:</p>
+                  <p className="text-brown-light text-sm mb-1">{pendingLocationData.address}</p>
+                  {pendingLocationData.city && (
+                    <p className="text-brown-light text-sm">🏙️ City: {pendingLocationData.city}</p>
+                  )}
+                  {pendingLocationData.pincode && (
+                    <p className="text-brown-light text-sm">📮 Pincode: {pendingLocationData.pincode}</p>
+                  )}
+                  <div className="mt-2 text-xs text-brown-light">
+                    <p>📐 Coordinates: {pendingLocationData.coordinates.latitude.toFixed(6)}, {pendingLocationData.coordinates.longitude.toFixed(6)}</p>
+                  </div>
+                </div>
+                
+                <div className="flex space-x-2">
+                  <a
+                    href={pendingLocationData.mapUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors text-center flex items-center justify-center space-x-1"
+                  >
+                    <span>🗺️</span>
+                    <span>View on Google Maps</span>
+                  </a>
+                  <button
+                    onClick={() => {
+                      // Copy coordinates to clipboard
+                      navigator.clipboard?.writeText(`${pendingLocationData.coordinates.latitude}, ${pendingLocationData.coordinates.longitude}`)
+                    }}
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-1"
+                  >
+                    <span>�</span>
+                    <span>Copy Coordinates</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-charcoal-brown font-medium mb-2">
+                    Add Landmark (Optional but recommended)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Near McDonald's, Opposite Park, Building Name, etc."
+                    className="w-full bg-cream-dark border-2 border-light-taupe rounded-lg px-4 py-3 text-charcoal-brown placeholder-brown-light focus:outline-none focus:border-soft-gold focus:bg-white"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        confirmLocationWithLandmark((e.target as HTMLInputElement).value)
+                      }
+                    }}
+                  />
+                  <p className="text-brown-light text-xs mt-1">
+                    This helps our delivery partner find your location easily
+                  </p>
+                </div>
+                
+                <div className="flex space-x-4">
+                  <button
+                    onClick={() => {
+                      const input = document.querySelector('input[placeholder*="landmark"]') as HTMLInputElement
+                      confirmLocationWithLandmark(input?.value || '')
+                    }}
+                    className="flex-1 bg-vibrant-coral hover:bg-coral-light text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+                  >
+                    ✅ Use This Location
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowLandmarkModal(false)
+                      setPendingLocationData(null)
+                    }}
+                    className="flex-1 bg-light-taupe hover:bg-taupe-dark text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -534,9 +719,48 @@ export default function CheckoutPage() {
                     <button
                       type="button"
                       onClick={getCurrentLocation}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                      disabled={isLocationLoading}
+                      className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2"
                     >
-                      📍 Use Current Location
+                      {isLocationLoading ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                          <span>Getting Location...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>📍</span>
+                          <span>Use Current Location</span>
+                        </>
+                      )}
+                    </button>
+                    <div className="bg-blue-100 border-2 border-blue-300 rounded-lg p-3">
+                      <div className="flex items-start space-x-2">
+                        <span className="text-blue-600 text-sm mt-0.5">💡</span>
+                        <div className="text-blue-800 text-xs">
+                          <p className="font-medium mb-1">Location Features:</p>
+                          <p>• Automatically detects your current address</p>
+                          <p>• Opens Google Maps for verification</p>
+                          <p>• Asks for landmark to help delivery</p>
+                          <p>• Works offline with coordinates if needed</p>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        // Clear all address fields for manual entry
+                        setDeliveryAddress(prev => ({
+                          ...prev,
+                          address: '',
+                          city: '',
+                          pincode: '',
+                          landmark: ''
+                        }))
+                      }}
+                      className="w-full bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                    >
+                      ✏️ Enter Address Manually
                     </button>
                   </div>
                   
@@ -566,6 +790,18 @@ export default function CheckoutPage() {
                     onChange={(e) => handleAddressChange('landmark', e.target.value)}
                     className="w-full bg-cream-dark border-2 border-light-taupe rounded-lg px-4 py-3 text-charcoal-brown placeholder-brown-light focus:outline-none focus:border-soft-gold focus:bg-white"
                   />
+                  <div className="bg-green-100 border-2 border-green-300 rounded-lg p-3">
+                    <div className="flex items-start space-x-2">
+                      <span className="text-green-600 text-sm mt-0.5">✨</span>
+                      <div className="text-green-800 text-xs">
+                        <p className="font-medium mb-1">Landmark Tips:</p>
+                        <p>• Near famous shops, restaurants, or buildings</p>
+                        <p>• Opposite landmarks like parks, temples, etc.</p>
+                        <p>• Building name, floor, apartment number</p>
+                        <p>• Any visible reference point for easy delivery</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
