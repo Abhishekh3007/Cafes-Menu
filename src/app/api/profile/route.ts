@@ -94,6 +94,8 @@ export async function GET(request: NextRequest) {
       email: userProfile.email,
       name: userProfile.name,
       phone: userProfile.phone,
+      dateOfBirth: userProfile.dateOfBirth,
+      gender: userProfile.gender,
       loyaltyPoints: userProfile.loyaltyPoints || 0,
       totalOrders: userProfile.totalOrders || 0,
       joinedDate: userProfile.joinedDate,
@@ -139,17 +141,23 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { name, phone } = body
+    const { name, phone, dateOfBirth, gender } = body
 
     await dbConnect()
 
+    // Prepare update object
+    const updateData: any = {
+      updatedAt: new Date()
+    }
+    
+    if (name !== undefined) updateData.name = name
+    if (phone !== undefined) updateData.phone = phone
+    if (dateOfBirth !== undefined) updateData.dateOfBirth = dateOfBirth ? new Date(dateOfBirth) : null
+    if (gender !== undefined) updateData.gender = gender || null
+
     const userProfile = await User.findOneAndUpdate(
       { clerkId: user.id },
-      { 
-        name: name || undefined,
-        phone: phone || undefined,
-        updatedAt: new Date()
-      },
+      updateData,
       { new: true }
     )
 
@@ -168,6 +176,8 @@ export async function PUT(request: NextRequest) {
         email: userProfile.email,
         name: userProfile.name,
         phone: userProfile.phone,
+        dateOfBirth: userProfile.dateOfBirth,
+        gender: userProfile.gender,
         loyaltyPoints: userProfile.loyaltyPoints || 0,
         totalOrders: userProfile.totalOrders || 0,
         joinedDate: userProfile.joinedDate,

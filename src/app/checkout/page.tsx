@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/components/CartProvider'
 import { useAuth } from '@/context/AuthContext'
@@ -16,6 +16,28 @@ interface DeliveryAddress {
   city: string
   pincode: string
   landmark?: string
+}
+
+interface SavedAddress {
+  _id: string
+  userId: string
+  clerkId: string
+  fullName: string
+  phone: string
+  street: string
+  city: string
+  state: string
+  zipCode: string
+  landmark?: string
+  addressType: 'home' | 'work' | 'other'
+  isDefault: boolean
+  coordinates?: {
+    latitude: number
+    longitude: number
+  }
+  instructions?: string
+  createdAt: string
+  updatedAt: string
 }
 
 interface CustomerInfo {
@@ -83,6 +105,12 @@ export default function CheckoutPage() {
   const [loyaltyDiscount, setLoyaltyDiscount] = useState(0)
   const [loyaltyPointsUsed, setLoyaltyPointsUsed] = useState(0)
 
+  // Saved addresses functionality
+  const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>([])
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null)
+  const [showSavedAddresses, setShowSavedAddresses] = useState(false)
+  const [addressesLoading, setAddressesLoading] = useState(false)
+
   const deliveryFee = orderType === 'delivery' ? 50 : 0
   const subtotal = currentTotal + deliveryFee
   const finalTotal = subtotal - loyaltyDiscount
@@ -101,6 +129,51 @@ export default function CheckoutPage() {
       })
     }
   }, [user])
+
+  // Fetch saved addresses
+  const fetchSavedAddresses = useCallback(async () => {
+    if (!isAuthenticated) return
+
+    setAddressesLoading(true)
+    try {
+      const response = await fetch('/api/addresses')
+      if (response.ok) {
+        const data = await response.json()
+        setSavedAddresses(data.addresses || [])
+        
+        // Auto-select default address if no address is currently selected
+        const defaultAddress = data.addresses?.find((addr: SavedAddress) => addr.isDefault)
+        if (defaultAddress && !deliveryAddress.address) {
+          selectSavedAddress(defaultAddress)
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch saved addresses:', error)
+    } finally {
+      setAddressesLoading(false)
+    }
+  }, [isAuthenticated, deliveryAddress.address])
+
+  // Use saved address data
+  const selectSavedAddress = (address: SavedAddress) => {
+    setDeliveryAddress({
+      fullName: address.fullName,
+      phone: address.phone,
+      address: address.street,
+      city: address.city,
+      pincode: address.zipCode,
+      landmark: address.landmark || ''
+    })
+    setSelectedAddressId(address._id)
+    setShowSavedAddresses(false)
+  }
+
+  // Fetch addresses when component mounts and user is authenticated
+  useEffect(() => {
+    if (isAuthenticated && orderType === 'delivery') {
+      fetchSavedAddresses()
+    }
+  }, [isAuthenticated, orderType, fetchSavedAddresses])
 
   const handleAddressChange = (field: keyof DeliveryAddress, value: string) => {
     setDeliveryAddress(prev => ({ ...prev, [field]: value }))
@@ -685,9 +758,119 @@ export default function CheckoutPage() {
             {/* Delivery Address for Home Delivery */}
             {orderType === 'delivery' && (
               <div className="bg-white rounded-2xl p-6 border-2 border-soft-gold shadow-2xl">
-                <h2 className="text-2xl font-display font-bold text-charcoal-brown mb-6">Delivery Address</h2>
-              
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-display font-bold text-charcoal-brown">Delivery Address</h2>
+                  
+                  {/* Saved Addresses Toggle Button */}
+                  {isAuthenticated && savedAddresses.length > 0 && (
+                    <button
+                      onClick={() => setShowSavedAddresses(!showSavedAddresses)}
+                      className="flex items-center space-x-2 bg-vibrant-coral hover:bg-vibrant-coral/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                    >
+                      <span>🏠</span>
+                      <span>{showSavedAddresses ? 'Hide' : 'Saved'} Addresses</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Saved Addresses List */}
+                {isAuthenticated && showSavedAddresses && (
+                  <div className="mb-6 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold text-charcoal-brown">Your Saved Addresses</h3>
+                      <button
+                        onClick={() => router.push('/addresses')}
+                        className="text-vibrant-coral hover:text-vibrant-coral/80 text-sm font-medium transition-colors"
+                      >
+                        Manage Addresses
+                      </button>
+                    </div>
+                    
+                    {addressesLoading ? (
+                      <div className="flex items-center justify-center py-8">
+                        <div className="animate-spin rounded-full h-6 w-6 border-2 border-vibrant-coral border-t-transparent"></div>
+                        <span className="ml-2 text-gray-600">Loading addresses...</span>
+                      </div>
+                    ) : (
+                      <div className="grid gap-3">
+                        {savedAddresses.map((address) => (
+                          <div
+                            key={address._id}
+                            className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                              selectedAddressId === address._id
+                                ? 'border-vibrant-coral bg-coral-light bg-opacity-10'
+                                : 'border-light-taupe hover:border-soft-gold'
+                            }`}
+                            onClick={() => selectSavedAddress(address)}
+                          >
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center space-x-2 mb-2">
+                                  <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${
+                                    address.addressType === 'home' ? 'text-green-600 bg-green-100' :
+                                    address.addressType === 'work' ? 'text-blue-600 bg-blue-100' :
+                                    'text-gray-600 bg-gray-100'
+                                  }`}>
+                                    <span>
+                                      {address.addressType === 'home' ? '🏠' : 
+                                       address.addressType === 'work' ? '🏢' : '📍'}
+                                    </span>
+                                    <span className="capitalize">{address.addressType}</span>
+                                  </div>
+                                  {address.isDefault && (
+                                    <div className="flex items-center space-x-1 bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-medium">
+                                      <span>⭐</span>
+                                      <span>Default</span>
+                                    </div>
+                                  )}
+                                </div>
+                                
+                                <h4 className="font-semibold text-charcoal-brown mb-1">{address.fullName}</h4>
+                                <p className="text-brown-light text-sm mb-1">{address.phone}</p>
+                                
+                                <div className="text-charcoal-brown text-sm space-y-1">
+                                  <p>{address.street}</p>
+                                  <p>{address.city}, {address.state} {address.zipCode}</p>
+                                  {address.landmark && (
+                                    <p className="text-brown-light">Near: {address.landmark}</p>
+                                  )}
+                                </div>
+                              </div>
+                              
+                              <div className="ml-4">
+                                {selectedAddressId === address._id && (
+                                  <div className="w-6 h-6 bg-vibrant-coral rounded-full flex items-center justify-center">
+                                    <span className="text-white text-xs">✓</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Address Form */}
                 <div className="space-y-4">
+                  {(!isAuthenticated || !showSavedAddresses || savedAddresses.length === 0) && (
+                    <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-3 mb-4">
+                      <div className="flex items-start space-x-2">
+                        <span className="text-blue-600 text-sm mt-0.5">💡</span>
+                        <div className="text-blue-800 text-xs">
+                          <p className="font-medium mb-1">Tip:</p>
+                          <p>
+                            {!isAuthenticated 
+                              ? 'Sign in to save addresses for faster checkout next time!'
+                              : 'Save this address to your profile for faster checkout next time!'
+                            }
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <input
                       type="text"
