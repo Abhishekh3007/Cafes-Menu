@@ -96,11 +96,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
     // Show toast notification instead of opening cart
     setToastMessage(`${item.name} added to cart!`)
     setShowToast(true)
-    
-    // Auto-hide toast after 4 seconds
-    setTimeout(() => {
-      setShowToast(false)
-    }, 4000)
   }
 
   const removeFromCart = (id: number) => {

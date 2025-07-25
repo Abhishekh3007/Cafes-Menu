@@ -2,11 +2,16 @@
 const nextConfig = {
   serverExternalPackages: ['mongoose', 'razorpay'],
   images: {
-    domains: ['localhost', 'images.unsplash.com'],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
         port: '',
         pathname: '/**',
       },

@@ -186,7 +186,7 @@ const sampleMenuItems = [
     description: 'Loaded Vegetables pizza with Mexican flavors',
     price: 270,
     category: 'Pizza',
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     ingredients: ['Thin crust', 'Vegetables', 'Mexican spices', 'Cheese'],
     allergens: ['Gluten', 'Dairy'],
     nutritionalInfo: { calories: 320, protein: 14, carbs: 38, fat: 14 },

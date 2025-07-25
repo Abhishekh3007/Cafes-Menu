@@ -27,10 +27,10 @@ export default function CartToast() {
 
   return (
     <div 
-      className="fixed left-4 right-4 z-50 transition-all duration-300 ease-in-out"
+      className="fixed left-4 right-4 z-[60] transition-all duration-300 ease-in-out"
       style={{ bottom: '88px' }} // 24px above 64px bottom nav = 88px
     >
-      <div className="bg-gradient-to-r from-accent-400 to-accent-500 text-white p-4 rounded-2xl shadow-2xl border border-accent-300 backdrop-blur-sm">
+      <div className="bg-vibrant-coral bg-gradient-to-r from-vibrant-coral to-coral-light text-white p-4 rounded-2xl shadow-2xl border border-vibrant-coral/30 backdrop-blur-sm bg-opacity-95">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="flex-shrink-0">

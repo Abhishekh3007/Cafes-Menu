@@ -256,13 +256,13 @@ export default function CheckoutPage() {
 
   if (currentItems.length === 0 && !isBuyNow) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-brown-900 via-brown-800 to-brown-900 flex items-center justify-center p-4">
-        <div className="text-center">
-          <h1 className="text-3xl font-display font-bold text-white mb-4">Your cart is empty</h1>
-          <p className="text-brown-200 mb-8">Add some delicious items to proceed with checkout</p>
+      <div className="min-h-screen bg-warm-cream flex items-center justify-center p-4">
+        <div className="text-center bg-white p-8 rounded-2xl border-2 border-vibrant-coral shadow-2xl">
+          <h1 className="text-3xl font-display font-bold text-charcoal-brown mb-4">Your cart is empty</h1>
+          <p className="text-brown-light mb-8">Add some delicious items to proceed with checkout</p>
           <button 
             onClick={() => router.push('/menu')}
-            className="bg-accent-400 hover:bg-accent-500 text-white px-8 py-3 rounded-lg font-semibold"
+            className="bg-vibrant-coral hover:bg-coral-light text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all"
           >
             Browse Menu
           </button>
@@ -272,39 +272,39 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brown-900 via-brown-800 to-brown-900 py-8 px-4">
+    <div className="min-h-screen bg-warm-cream py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Buy Now Indicator */}
         {isBuyNow && (
-          <div className="mb-6 bg-gradient-to-r from-amber-600 to-amber-700 p-4 rounded-lg shadow-lg">
+          <div className="mb-6 bg-gradient-to-r from-vibrant-coral to-coral-light p-4 rounded-lg shadow-lg border-2 border-vibrant-coral">
             <div className="flex items-center justify-center space-x-2">
               <span className="text-white text-lg font-semibold">⚡ Express Checkout</span>
-              <span className="text-secondary-400 text-sm">- Amazon-style one-click buy</span>
+              <span className="text-white text-sm">- Amazon-style one-click buy</span>
             </div>
           </div>
         )}
         
-        <h1 className="text-4xl font-display font-bold text-white text-center mb-8">
+        <h1 className="text-4xl font-display font-bold text-charcoal-brown text-center mb-8">
           {isBuyNow ? 'Express Checkout' : 'Checkout'}
         </h1>
 
         {/* Login Prompt Modal */}
         {showLoginPrompt && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-primary-600 p-8 rounded-2xl border border-accent-400 border-opacity-20 max-w-md w-full mx-4">
-              <h2 className="text-2xl font-bold text-white mb-4 text-center">Login Required</h2>
-              <p className="text-brown-200 mb-6 text-center">
+            <div className="bg-white p-8 rounded-2xl border-2 border-vibrant-coral shadow-2xl max-w-md w-full mx-4">
+              <h2 className="text-2xl font-bold text-charcoal-brown mb-4 text-center">Login Required</h2>
+              <p className="text-brown-light mb-6 text-center">
                 Please sign in to complete your order
               </p>
               <div className="flex flex-col space-y-4">
                 <SignInButton mode="modal">
-                  <button className="w-full bg-accent-400 hover:bg-accent-500 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                  <button className="w-full bg-vibrant-coral hover:bg-coral-light text-white px-6 py-3 rounded-lg font-semibold transition-colors">
                     Sign In
                   </button>
                 </SignInButton>
                 <button
                   onClick={() => setShowLoginPrompt(false)}
-                  className="w-full bg-primary-500 hover:bg-primary-400 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+                  className="w-full bg-light-taupe hover:bg-taupe-dark text-white px-6 py-3 rounded-lg font-semibold transition-colors"
                 >
                   Cancel
                 </button>
@@ -315,52 +315,52 @@ export default function CheckoutPage() {
         
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Order Summary */}
-          <div className="bg-primary-600 bg-opacity-30 backdrop-blur-sm rounded-2xl p-6 border border-accent-400 border-opacity-20">
-            <h2 className="text-2xl font-display font-bold text-white mb-6">
+          <div className="bg-white rounded-2xl p-6 border-2 border-vibrant-coral shadow-2xl">
+            <h2 className="text-2xl font-display font-bold text-charcoal-brown mb-6">
               {isBuyNow ? '⚡ Express Order' : 'Order Summary'}
             </h2>
             
             <div className="space-y-4 mb-6">
               {currentItems.map((item) => (
-                <div key={item.id} className={`flex justify-between items-center py-3 border-b border-primary-500 ${isBuyNow ? 'bg-secondary-400 bg-opacity-20 rounded-lg px-3' : ''}`}>
+                <div key={item.id} className={`flex justify-between items-center py-3 border-b-2 border-light-taupe ${isBuyNow ? 'bg-coral-light bg-opacity-10 rounded-lg px-3 border-2 border-vibrant-coral' : ''}`}>
                   <div>
-                    <h3 className="text-white font-medium">
+                    <h3 className="text-charcoal-brown font-medium text-lg">
                       {isBuyNow && '⚡ '}{item.name}
                     </h3>
-                    <p className="text-brown-300 text-sm">Qty: {item.quantity || 1}</p>
+                    <p className="text-brown-light text-sm">Qty: {item.quantity || 1}</p>
                     {isBuyNow && (
-                      <p className="text-accent-400 text-xs font-medium">Express Checkout Item</p>
+                      <p className="text-vibrant-coral text-xs font-medium">Express Checkout Item</p>
                     )}
                   </div>
-                  <span className="text-secondary-400 font-semibold">₹{(item.price * (item.quantity || 1)).toFixed(2)}</span>
+                  <span className="text-soft-gold font-bold text-lg">₹{(item.price * (item.quantity || 1)).toFixed(2)}</span>
                 </div>
               ))}
             </div>
             
-            <div className="space-y-2 pt-4 border-t border-brown-700">
-              <div className="flex justify-between text-brown-200">
+            <div className="space-y-2 pt-4 border-t-2 border-vibrant-coral">
+              <div className="flex justify-between text-charcoal-brown font-medium">
                 <span>Subtotal:</span>
                 <span>₹{currentTotal.toFixed(2)}</span>
               </div>
               {orderType === 'delivery' && (
-                <div className="flex justify-between text-brown-200">
+                <div className="flex justify-between text-charcoal-brown font-medium">
                   <span>Delivery Fee:</span>
                   <span>₹{deliveryFee.toFixed(2)}</span>
                 </div>
               )}
               {orderType === 'takeaway' && (
-                <div className="flex justify-between text-green-400">
+                <div className="flex justify-between text-green-600 font-medium">
                   <span>Takeaway (No Delivery Fee):</span>
                   <span>₹0.00</span>
                 </div>
               )}
               {loyaltyDiscount > 0 && (
-                <div className="flex justify-between text-green-400">
+                <div className="flex justify-between text-green-600 font-medium">
                   <span>Loyalty Discount ({loyaltyPointsUsed} points):</span>
                   <span>-₹{loyaltyDiscount.toFixed(2)}</span>
                 </div>
               )}
-              <div className="flex justify-between text-xl font-bold text-amber-300 pt-2 border-t border-brown-600">
+              <div className="flex justify-between text-xl font-bold text-vibrant-coral pt-2 border-t-2 border-vibrant-coral bg-coral-light bg-opacity-10 p-2 rounded">
                 <span>Total:</span>
                 <span>₹{finalTotal.toFixed(2)}</span>
               </div>
@@ -383,7 +383,7 @@ export default function CheckoutPage() {
             </button>
             
             {!isAuthenticated && (
-              <p className="text-brown-300 text-xs text-center mt-2">
+              <p className="text-brown-light text-xs text-center mt-2">
                 You&apos;ll need to sign in when clicking Pay Now
               </p>
             )}
@@ -399,8 +399,8 @@ export default function CheckoutPage() {
           {/* Order Type & Details Form */}
           <div className="space-y-6">
             {/* Order Type Selection */}
-            <div className="bg-brown-800 bg-opacity-30 backdrop-blur-sm rounded-2xl p-6 border border-amber-300 border-opacity-20">
-              <h2 className="text-2xl font-display font-bold text-white mb-6">Order Type</h2>
+            <div className="bg-white rounded-2xl p-6 border-2 border-soft-gold shadow-2xl">
+              <h2 className="text-2xl font-display font-bold text-charcoal-brown mb-6">Order Type</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Delivery Option */}
@@ -415,15 +415,15 @@ export default function CheckoutPage() {
                   />
                   <div className={`p-4 rounded-lg border-2 transition-all duration-300 ${
                     orderType === 'delivery' 
-                      ? 'border-amber-400 bg-amber-400 bg-opacity-10' 
-                      : 'border-brown-600 bg-brown-700 bg-opacity-30'
+                      ? 'border-soft-gold bg-gold-light bg-opacity-20 shadow-lg' 
+                      : 'border-light-taupe bg-cream-dark hover:border-soft-gold'
                   }`}>
                     <div className="flex items-center space-x-3">
                       <span className="text-2xl">🚚</span>
                       <div>
-                        <div className="text-white font-semibold">Home Delivery</div>
-                        <div className="text-brown-300 text-sm">Delivered to your doorstep</div>
-                        <div className="text-amber-300 text-sm font-medium">+ ₹50 delivery fee</div>
+                        <div className="text-charcoal-brown font-semibold">Home Delivery</div>
+                        <div className="text-brown-light text-sm">Delivered to your doorstep</div>
+                        <div className="text-vibrant-coral text-sm font-medium">+ ₹50 delivery fee</div>
                       </div>
                     </div>
                   </div>
@@ -441,15 +441,15 @@ export default function CheckoutPage() {
                   />
                   <div className={`p-4 rounded-lg border-2 transition-all duration-300 ${
                     orderType === 'takeaway' 
-                      ? 'border-amber-400 bg-amber-400 bg-opacity-10' 
-                      : 'border-brown-600 bg-brown-700 bg-opacity-30'
+                      ? 'border-soft-gold bg-gold-light bg-opacity-20 shadow-lg' 
+                      : 'border-light-taupe bg-cream-dark hover:border-soft-gold'
                   }`}>
                     <div className="flex items-center space-x-3">
                       <span className="text-2xl">🏪</span>
                       <div>
-                        <div className="text-white font-semibold">Takeaway</div>
-                        <div className="text-brown-300 text-sm">Pick up from restaurant</div>
-                        <div className="text-green-400 text-sm font-medium">No delivery fee</div>
+                        <div className="text-charcoal-brown font-semibold">Takeaway</div>
+                        <div className="text-brown-light text-sm">Pick up from restaurant</div>
+                        <div className="text-green-600 text-sm font-medium">No delivery fee</div>
                       </div>
                     </div>
                   </div>
@@ -459,8 +459,8 @@ export default function CheckoutPage() {
 
             {/* Customer Info for Takeaway */}
             {orderType === 'takeaway' && (
-              <div className="bg-brown-800 bg-opacity-30 backdrop-blur-sm rounded-2xl p-6 border border-amber-300 border-opacity-20">
-                <h2 className="text-2xl font-display font-bold text-white mb-6">Customer Information</h2>
+              <div className="bg-white rounded-2xl p-6 border-2 border-soft-gold shadow-2xl">
+                <h2 className="text-2xl font-display font-bold text-charcoal-brown mb-6">Customer Information</h2>
                 
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -469,7 +469,7 @@ export default function CheckoutPage() {
                       placeholder="Full Name *"
                       value={customerInfo.fullName}
                       onChange={(e) => handleCustomerInfoChange('fullName', e.target.value)}
-                      className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400"
+                      className="w-full bg-cream-dark border-2 border-light-taupe rounded-lg px-4 py-3 text-charcoal-brown placeholder-brown-light focus:outline-none focus:border-soft-gold focus:bg-white"
                       required
                     />
                     <input
@@ -477,15 +477,15 @@ export default function CheckoutPage() {
                       placeholder="Phone Number *"
                       value={customerInfo.phone}
                       onChange={(e) => handleCustomerInfoChange('phone', e.target.value)}
-                      className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400"
+                      className="w-full bg-cream-dark border-2 border-light-taupe rounded-lg px-4 py-3 text-charcoal-brown placeholder-brown-light focus:outline-none focus:border-soft-gold focus:bg-white"
                       required
                     />
                   </div>
                   
-                  <div className="bg-blue-500 bg-opacity-20 border border-blue-400 border-opacity-30 rounded-lg p-4">
+                  <div className="bg-blue-100 border-2 border-blue-300 rounded-lg p-4">
                     <div className="flex items-start space-x-3">
-                      <span className="text-blue-400 text-xl mt-1">ℹ️</span>
-                      <div className="text-blue-300">
+                      <span className="text-blue-600 text-xl mt-1">ℹ️</span>
+                      <div className="text-blue-800">
                         <p className="font-semibold mb-1">Pickup Information:</p>
                         <p className="text-sm">• Your order will be ready for pickup in 20-30 minutes</p>
                         <p className="text-sm">• Please bring your order confirmation</p>
@@ -499,8 +499,8 @@ export default function CheckoutPage() {
 
             {/* Delivery Address for Home Delivery */}
             {orderType === 'delivery' && (
-              <div className="bg-brown-800 bg-opacity-30 backdrop-blur-sm rounded-2xl p-6 border border-amber-300 border-opacity-20">
-                <h2 className="text-2xl font-display font-bold text-white mb-6">Delivery Address</h2>
+              <div className="bg-white rounded-2xl p-6 border-2 border-soft-gold shadow-2xl">
+                <h2 className="text-2xl font-display font-bold text-charcoal-brown mb-6">Delivery Address</h2>
               
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -509,7 +509,7 @@ export default function CheckoutPage() {
                       placeholder="Full Name *"
                       value={deliveryAddress.fullName}
                       onChange={(e) => handleAddressChange('fullName', e.target.value)}
-                      className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400"
+                      className="w-full bg-cream-dark border-2 border-light-taupe rounded-lg px-4 py-3 text-charcoal-brown placeholder-brown-light focus:outline-none focus:border-soft-gold focus:bg-white"
                       required
                     />
                     <input
@@ -517,7 +517,7 @@ export default function CheckoutPage() {
                       placeholder="Phone Number *"
                       value={deliveryAddress.phone}
                       onChange={(e) => handleAddressChange('phone', e.target.value)}
-                      className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400"
+                      className="w-full bg-cream-dark border-2 border-light-taupe rounded-lg px-4 py-3 text-charcoal-brown placeholder-brown-light focus:outline-none focus:border-soft-gold focus:bg-white"
                       required
                     />
                   </div>
@@ -528,7 +528,7 @@ export default function CheckoutPage() {
                       value={deliveryAddress.address}
                       onChange={(e) => handleAddressChange('address', e.target.value)}
                       rows={3}
-                      className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400"
+                      className="w-full bg-cream-dark border-2 border-light-taupe rounded-lg px-4 py-3 text-charcoal-brown placeholder-brown-light focus:outline-none focus:border-soft-gold focus:bg-white"
                       required
                     />
                     <button
@@ -546,7 +546,7 @@ export default function CheckoutPage() {
                       placeholder="City *"
                       value={deliveryAddress.city}
                       onChange={(e) => handleAddressChange('city', e.target.value)}
-                      className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400"
+                      className="w-full bg-cream-dark border-2 border-light-taupe rounded-lg px-4 py-3 text-charcoal-brown placeholder-brown-light focus:outline-none focus:border-soft-gold focus:bg-white"
                       required
                     />
                     <input
@@ -554,7 +554,7 @@ export default function CheckoutPage() {
                       placeholder="Pincode *"
                       value={deliveryAddress.pincode}
                       onChange={(e) => handleAddressChange('pincode', e.target.value)}
-                      className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400"
+                      className="w-full bg-cream-dark border-2 border-light-taupe rounded-lg px-4 py-3 text-charcoal-brown placeholder-brown-light focus:outline-none focus:border-soft-gold focus:bg-white"
                       required
                     />
                   </div>
@@ -564,34 +564,34 @@ export default function CheckoutPage() {
                     placeholder="Landmark (Optional)"
                     value={deliveryAddress.landmark}
                     onChange={(e) => handleAddressChange('landmark', e.target.value)}
-                    className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400"
+                    className="w-full bg-cream-dark border-2 border-light-taupe rounded-lg px-4 py-3 text-charcoal-brown placeholder-brown-light focus:outline-none focus:border-soft-gold focus:bg-white"
                   />
                 </div>
               </div>
             )}
 
             {/* Payment Method */}
-            <div className="bg-brown-800 bg-opacity-30 backdrop-blur-sm rounded-2xl p-6 border border-amber-300 border-opacity-20">
-              <h2 className="text-2xl font-display font-bold text-white mb-6">Payment Method</h2>
+            <div className="bg-white rounded-2xl p-6 border-2 border-soft-gold shadow-2xl">
+              <h2 className="text-2xl font-display font-bold text-charcoal-brown mb-6">Payment Method</h2>
               
               <div className="space-y-4">
                 {/* Cash on Delivery */}
-                <label className="flex items-center space-x-3 cursor-pointer">
+                <label className="flex items-center space-x-3 cursor-pointer p-3 border-2 border-light-taupe rounded-lg hover:border-soft-gold transition-colors">
                   <input
                     type="radio"
                     name="paymentMethod"
                     value="cod"
                     checked={paymentMethod === 'cod'}
                     onChange={(e) => setPaymentMethod(e.target.value as 'cod')}
-                    className="w-4 h-4 text-amber-600"
+                    className="w-4 h-4 text-soft-gold"
                   />
                   <div className="flex items-center space-x-3">
                     <span className="text-2xl">💵</span>
                     <div>
-                      <div className="text-white font-medium">
+                      <div className="text-charcoal-brown font-medium">
                         {orderType === 'delivery' ? 'Cash on Delivery' : 'Cash on Pickup'}
                       </div>
-                      <div className="text-brown-300 text-sm">
+                      <div className="text-brown-light text-sm">
                         {orderType === 'delivery' ? 'Pay when your order arrives' : 'Pay when you collect your order'}
                       </div>
                     </div>
@@ -599,58 +599,58 @@ export default function CheckoutPage() {
                 </label>
 
                 {/* UPI Payment */}
-                <label className="flex items-center space-x-3 cursor-pointer">
+                <label className="flex items-center space-x-3 cursor-pointer p-3 border-2 border-light-taupe rounded-lg hover:border-soft-gold transition-colors">
                   <input
                     type="radio"
                     name="paymentMethod"
                     value="upi"
                     checked={paymentMethod === 'upi'}
                     onChange={(e) => setPaymentMethod(e.target.value as 'upi')}
-                    className="w-4 h-4 text-amber-600"
+                    className="w-4 h-4 text-soft-gold"
                   />
                   <div className="flex items-center space-x-3">
                     <span className="text-2xl">📱</span>
                     <div>
-                      <div className="text-white font-medium">UPI Payment</div>
-                      <div className="text-brown-300 text-sm">Pay instantly using UPI apps</div>
+                      <div className="text-charcoal-brown font-medium">UPI Payment</div>
+                      <div className="text-brown-light text-sm">Pay instantly using UPI apps</div>
                     </div>
                   </div>
                 </label>
 
                 {paymentMethod === 'upi' && (
-                  <div className="ml-7 space-y-3">
+                  <div className="ml-7 space-y-3 p-4 bg-cream-dark rounded-lg border-2 border-soft-gold">
                     <input
                       type="text"
                       placeholder="Enter your UPI ID for order confirmation (e.g., yourname@paytm)"
                       value={upiId}
                       onChange={(e) => setUpiId(e.target.value)}
-                      className="w-full bg-brown-700 bg-opacity-50 border border-brown-600 rounded-lg px-4 py-3 text-white placeholder-brown-300 focus:outline-none focus:border-amber-400"
+                      className="w-full bg-white border-2 border-light-taupe rounded-lg px-4 py-3 text-charcoal-brown placeholder-brown-light focus:outline-none focus:border-soft-gold"
                     />
-                    <div className="text-brown-300 text-sm">
+                    <div className="text-brown-light text-sm">
                       💡 After placing order, you&apos;ll be redirected to your UPI app to complete payment
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      <span className="text-brown-300 text-xs">Supported apps:</span>
-                      <span className="text-amber-300 text-xs">Google Pay • PhonePe • Paytm • BHIM • WhatsApp</span>
+                      <span className="text-brown-light text-xs">Supported apps:</span>
+                      <span className="text-vibrant-coral text-xs font-medium">Google Pay • PhonePe • Paytm • BHIM • WhatsApp</span>
                     </div>
                   </div>
                 )}
 
                 {/* Online Payment with Razorpay */}
-                <label className="flex items-center space-x-3 cursor-pointer">
+                <label className="flex items-center space-x-3 cursor-pointer p-3 border-2 border-light-taupe rounded-lg hover:border-soft-gold transition-colors">
                   <input
                     type="radio"
                     name="paymentMethod"
                     value="online"
                     checked={paymentMethod === 'online'}
                     onChange={(e) => setPaymentMethod(e.target.value as 'online')}
-                    className="w-4 h-4 text-amber-600"
+                    className="w-4 h-4 text-soft-gold"
                   />
                   <div className="flex items-center space-x-3">
                     <span className="text-2xl">💳</span>
                     <div>
-                      <div className="text-white font-medium">Online Payment</div>
-                      <div className="text-brown-300 text-sm">Pay securely with Card/UPI/Wallet via Razorpay</div>
+                      <div className="text-charcoal-brown font-medium">Online Payment</div>
+                      <div className="text-brown-light text-sm">Pay securely with Card/UPI/Wallet via Razorpay</div>
                     </div>
                   </div>
                 </label>
@@ -659,8 +659,8 @@ export default function CheckoutPage() {
 
             {/* Error Message */}
             {error && (
-              <div className="bg-red-500 bg-opacity-20 border border-red-500 border-opacity-30 rounded-lg p-4">
-                <p className="text-red-300 text-center">{error}</p>
+              <div className="bg-red-100 border-2 border-red-400 rounded-lg p-4 shadow-lg">
+                <p className="text-red-800 text-center font-medium">{error}</p>
               </div>
             )}
           </div>
